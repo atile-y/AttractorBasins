@@ -1,0 +1,7 @@
+<RCC>
+    <qresource prefix="/images">
+        <file alias="pause.png">data/images/pause.png</file>
+        <file alias="play.png">data/images/play.png</file>
+        <file alias="stop.png">data/images/stop.png</file>
+    </qresource>
+</RCC>
