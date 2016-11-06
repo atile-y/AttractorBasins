@@ -77,6 +77,7 @@ public:
 
         stopPushButton = new QPushButton(centralWidget);
         stopPushButton->setObjectName(QStringLiteral("stopPushButton"));
+        stopPushButton->setEnabled(false);
         stopPushButton->setGeometry(QRect(50, 90, 32, 32));
         stopPushButton->setCursor(QCursor(Qt::PointingHandCursor));
         QIcon icon;
@@ -86,6 +87,7 @@ public:
         stopPushButton->setFlat(true);
         pausePushButton = new QPushButton(centralWidget);
         pausePushButton->setObjectName(QStringLiteral("pausePushButton"));
+        pausePushButton->setEnabled(false);
         pausePushButton->setGeometry(QRect(105, 90, 32, 32));
         pausePushButton->setCursor(QCursor(Qt::PointingHandCursor));
         QIcon icon1;

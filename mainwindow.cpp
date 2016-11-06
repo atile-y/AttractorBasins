@@ -14,8 +14,6 @@ MainWindow::MainWindow(QWidget *parent) :
     v = new QIntValidator(0, 255, ui->ruleLineEdit);
     ui->ruleLineEdit->setValidator(v);
 
-    m_nSize = 20;
-    m_nRule = 60;
     G = new Graph(this);
 
     setFixedSize(geometry().width(), geometry().height());
@@ -31,11 +29,11 @@ void MainWindow::on_sizeLineEdit_editingFinished(){
     QIntValidator *v = (QIntValidator*)ui->sizeLineEdit->validator();
 
     if( v->validate(str, pos) != QValidator::Acceptable ){
-        ui->sizeLineEdit->setText(QString::number(m_nSize));
+        ui->sizeLineEdit->setText(QString::number(G->getSize()));
         return;
     }
 
-    m_nSize = str.toUInt();
+    G->setSize(str.toUInt());
 }
 
 void MainWindow::on_ruleLineEdit_editingFinished(){
@@ -44,21 +42,35 @@ void MainWindow::on_ruleLineEdit_editingFinished(){
     QIntValidator *v = (QIntValidator*)ui->ruleLineEdit->validator();
 
     if( v->validate(str, pos) != QValidator::Acceptable ){
-        ui->ruleLineEdit->setText(QString::number(m_nRule));
+        ui->ruleLineEdit->setText(QString::number(G->getRule()));
         return;
     }
 
-    m_nRule = str.toUInt();
+    G->setRule(str.toUInt());
 }
 
 void MainWindow::on_stopPushButton_clicked(){
+    G->reset();
+    G->hide();
 
+    ui->stopPushButton->setEnabled(false);
+    ui->pausePushButton->setEnabled(false);
+    ui->playPushButton->setEnabled(true);
 }
 
 void MainWindow::on_pausePushButton_clicked(){
+    G->pause();
 
+    ui->stopPushButton->setEnabled(true);
+    ui->pausePushButton->setEnabled(false);
+    ui->playPushButton->setEnabled(true);
 }
 
 void MainWindow::on_playPushButton_clicked(){
+    G->play();
     G->show();
+
+    ui->stopPushButton->setEnabled(true);
+    ui->pausePushButton->setEnabled(true);
+    ui->playPushButton->setEnabled(false);
 }

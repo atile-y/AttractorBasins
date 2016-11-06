@@ -60,6 +60,9 @@
     </layout>
    </widget>
    <widget class="QPushButton" name="stopPushButton">
+    <property name="enabled">
+     <bool>false</bool>
+    </property>
     <property name="geometry">
      <rect>
       <x>50</x>
@@ -89,6 +92,9 @@
     </property>
    </widget>
    <widget class="QPushButton" name="pausePushButton">
+    <property name="enabled">
+     <bool>false</bool>
+    </property>
     <property name="geometry">
      <rect>
       <x>105</x>

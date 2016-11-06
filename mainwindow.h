@@ -26,8 +26,6 @@ private slots:
 
 private:
     Ui::MainWindow *ui;
-    uint m_nSize;
-    uint m_nRule;
     Graph *G;
 };
 

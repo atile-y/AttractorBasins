@@ -10,8 +10,12 @@ Graph::Graph(QWidget *parent) : QOpenGLWidget(parent){
     setWindowFlags(Qt::Window);
     setWindowTitle(tr("Graph"));
     setMinimumWidth(400);
-    setMinimumHeight(300);
+    setMinimumHeight(400);
     resize(800, 600);
+
+    m_nSize = 20;
+    m_nRule = 60;
+    reset();
 
     QTimer *timer = new QTimer(this);
     connect(timer, SIGNAL(timeout()), this, SLOT(Idle()));
@@ -21,6 +25,14 @@ Graph::Graph(QWidget *parent) : QOpenGLWidget(parent){
 Graph::~Graph(){
     while( !children().isEmpty() )
         delete children()[0];
+}
+
+void Graph::play(){
+    paintGL();
+}
+
+void Graph::pause(){
+    paintGL();
 }
 
 void Graph::reset(){
@@ -41,18 +53,14 @@ void Graph::initializeGL(){
 }
 
 void Graph::resizeGL(int width, int height){
-    GLfloat ratio;
-
-    if( height == 0 )
-        height = 1;
-
-    ratio = (GLfloat)width / (GLfloat)height;
-
-    glViewport(0, 0, width, height);
+    GLfloat w = width, h = height;
 
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
-    gluOrtho2D(-100, 100, -100, 100);
+    if( width < height )
+        gluOrtho2D(-100, 100, -h*100/w, h*100/w);
+    else
+        gluOrtho2D(-w*100/h, w*100/h, -100, 100);
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
 
