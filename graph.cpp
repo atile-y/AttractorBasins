@@ -1,5 +1,4 @@
 #include "graph.h"
-#include "state.h"
 
 #include <QDebug>
 #include <QTimer>
@@ -22,6 +21,9 @@ Graph::Graph(QWidget *parent) : QOpenGLWidget(parent){
 Graph::~Graph(){
     while( !children().isEmpty() )
         delete children()[0];
+    for(State *s : m_vGraph)
+        if( s != NULL )
+            delete s;
 }
 
 void Graph::play(){
@@ -29,26 +31,30 @@ void Graph::play(){
         reset();
 
     State *s = new State(m_nSize);
-    /*qInfo() << s->getSize();
-    QString str = "";
-    for(int i=0;i<s->getSize();i++)
-        str += (s->getTape()[i]?"1":"0");
-    qInfo() << str;
-    qInfo() << s->getVSize();
-    for(int i=0;i<s->getVSize();i++)
-        qInfo() << s->getValues()[i];*/
+    m_vGraph.append(s);
 
-    delete s;
+    th = new Thread(*s, m_nRule);
+    connect(th, SIGNAL(stateReady(State)), this, SLOT(handleState(State)));
+    connect(th, SIGNAL(stateError()), this, SLOT(handleError()));
+    th->start();
 
     m_nState = PLAY;
     paintGL();
 }
 
 void Graph::pause(){
+    m_nState = PAUSE;
     paintGL();
 }
 
 void Graph::reset(){
+    for(State *s : m_vGraph)
+        if( s != NULL )
+            delete s;
+
+    m_vGraph.clear();
+
+    m_nState = STOP;
     paintGL();
 }
 
@@ -90,6 +96,14 @@ void Graph::paintGL(){
         glVertex2i(0, 100);
         glVertex2i(100, -100);
     glEnd();
+}
+
+void Graph::handleState(State s){
+
+}
+
+void Graph::handleError(){
+
 }
 
 bool Graph::Inicializa(){

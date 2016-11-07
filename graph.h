@@ -7,6 +7,9 @@
 
 #include <QOpenGLWidget>
 
+#include "state.h"
+#include "thread.h"
+
 class Graph : public QOpenGLWidget {
     Q_OBJECT
 public:
@@ -31,12 +34,18 @@ protected:
     void resizeGL(int, int);
     void paintGL();
 
+private slots:
+    void handleState(State);
+    void handleError();
+
 private:
     bool Inicializa();
 
     uint m_nSize;
     uint m_nRule;
     uint m_nState;
+    QVector<State*> m_vGraph;
+    Thread *th;
 };
 
 #endif // GRAPH_H

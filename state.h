@@ -5,6 +5,7 @@
 
 class State{
 public:
+    State();
     State(uint);
    ~State();
 
@@ -15,6 +16,8 @@ public:
     uint64_t* getValues(){ return m_vValue; }
 
     void setNext(State *s){ m_sNext = s; }
+
+    State* evolve(uint);
 
 private:
     State *m_sNext;
