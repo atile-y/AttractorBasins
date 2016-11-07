@@ -1,21 +1,18 @@
 #include "graph.h"
+#include "state.h"
 
 #include <QDebug>
-//#include <QMouseEvent>
 #include <QTimer>
 #include <GL/glu.h>
 
 Graph::Graph(QWidget *parent) : QOpenGLWidget(parent){
-    //setMouseTracking(true);
     setWindowFlags(Qt::Window);
     setWindowTitle(tr("Graph"));
     setMinimumWidth(400);
     setMinimumHeight(400);
     resize(800, 600);
 
-    m_nSize = 20;
-    m_nRule = 60;
-    reset();
+    m_nState = STOP;
 
     QTimer *timer = new QTimer(this);
     connect(timer, SIGNAL(timeout()), this, SLOT(Idle()));
@@ -28,6 +25,22 @@ Graph::~Graph(){
 }
 
 void Graph::play(){
+    if( m_nState == STOP )
+        reset();
+
+    State *s = new State(m_nSize);
+    /*qInfo() << s->getSize();
+    QString str = "";
+    for(int i=0;i<s->getSize();i++)
+        str += (s->getTape()[i]?"1":"0");
+    qInfo() << str;
+    qInfo() << s->getVSize();
+    for(int i=0;i<s->getVSize();i++)
+        qInfo() << s->getValues()[i];*/
+
+    delete s;
+
+    m_nState = PLAY;
     paintGL();
 }
 

@@ -62,6 +62,7 @@ public:
 
         sizeLineEdit = new QLineEdit(formLayoutWidget);
         sizeLineEdit->setObjectName(QStringLiteral("sizeLineEdit"));
+        sizeLineEdit->setEnabled(true);
 
         formLayout->setWidget(0, QFormLayout::FieldRole, sizeLineEdit);
 

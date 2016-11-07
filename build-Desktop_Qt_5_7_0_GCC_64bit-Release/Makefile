@@ -50,12 +50,14 @@ OBJECTS_DIR   = ./
 
 SOURCES       = ../main.cpp \
 		../mainwindow.cpp \
-		../graph.cpp qrc_resources.cpp \
+		../graph.cpp \
+		../state.cpp qrc_resources.cpp \
 		moc_mainwindow.cpp \
 		moc_graph.cpp
 OBJECTS       = main.o \
 		mainwindow.o \
 		graph.o \
+		state.o \
 		qrc_resources.o \
 		moc_mainwindow.o \
 		moc_graph.o
@@ -208,9 +210,11 @@ DIST          = /home/Qt5.7.0/5.7/gcc_64/mkspecs/features/spec_pre.prf \
 		/home/Qt5.7.0/5.7/gcc_64/mkspecs/features/yacc.prf \
 		/home/Qt5.7.0/5.7/gcc_64/mkspecs/features/lex.prf \
 		../../AttractorBasins.pro ../mainwindow.h \
-		../graph.h ../main.cpp \
+		../graph.h \
+		../state.h ../main.cpp \
 		../mainwindow.cpp \
-		../graph.cpp
+		../graph.cpp \
+		../state.cpp
 QMAKE_TARGET  = AttractorBasins
 DESTDIR       = 
 TARGET        = AttractorBasins
@@ -544,8 +548,8 @@ distdir: FORCE
 	@test -d $(DISTDIR) || mkdir -p $(DISTDIR)
 	$(COPY_FILE) --parents $(DIST) $(DISTDIR)/
 	$(COPY_FILE) --parents ../resources.qrc $(DISTDIR)/
-	$(COPY_FILE) --parents ../mainwindow.h ../graph.h $(DISTDIR)/
-	$(COPY_FILE) --parents ../main.cpp ../mainwindow.cpp ../graph.cpp $(DISTDIR)/
+	$(COPY_FILE) --parents ../mainwindow.h ../graph.h ../state.h $(DISTDIR)/
+	$(COPY_FILE) --parents ../main.cpp ../mainwindow.cpp ../graph.cpp ../state.cpp $(DISTDIR)/
 	$(COPY_FILE) --parents ../mainwindow.ui $(DISTDIR)/
 
 
@@ -1056,55 +1060,7 @@ mainwindow.o: ../mainwindow.cpp ../mainwindow.h \
 		../../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qmainwindow.h \
 		../../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qtabwidget.h \
 		../../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qicon.h \
-		ui_mainwindow.h \
-		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QVariant \
-		../../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QAction \
-		../../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qaction.h \
-		../../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qactiongroup.h \
-		../../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QApplication \
-		../../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qapplication.h \
-		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qcoreapplication.h \
-		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qeventloop.h \
-		../../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qdesktopwidget.h \
-		../../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qguiapplication.h \
-		../../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qinputmethod.h \
-		../../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QButtonGroup \
-		../../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qbuttongroup.h \
-		../../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QFormLayout \
-		../../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qformlayout.h \
-		../../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QLayout \
-		../../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qlayout.h \
-		../../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qlayoutitem.h \
-		../../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qboxlayout.h \
-		../../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qgridlayout.h \
-		../../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QHeaderView \
-		../../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qheaderview.h \
-		../../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qabstractitemview.h \
-		../../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qabstractscrollarea.h \
-		../../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qframe.h \
-		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qabstractitemmodel.h \
-		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qitemselectionmodel.h \
-		../../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qabstractitemdelegate.h \
-		../../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qstyleoption.h \
-		../../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qabstractspinbox.h \
-		../../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qvalidator.h \
-		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qregularexpression.h \
-		../../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qslider.h \
-		../../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qabstractslider.h \
-		../../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qstyle.h \
-		../../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qtabbar.h \
-		../../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qrubberband.h \
-		../../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QLabel \
-		../../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qlabel.h \
-		../../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QLineEdit \
-		../../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qlineedit.h \
-		../../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qtextcursor.h \
-		../../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qtextformat.h \
-		../../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qpen.h \
-		../../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qtextoption.h \
-		../../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QPushButton \
-		../../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qpushbutton.h \
-		../../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qabstractbutton.h
+		ui_mainwindow.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o mainwindow.o ../mainwindow.cpp
 
 graph.o: ../graph.cpp ../graph.h \
@@ -1213,11 +1169,15 @@ graph.o: ../graph.cpp ../graph.h \
 		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qt_windows.h \
 		../../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qopengles2ext.h \
 		../../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qopenglext.h \
+		../state.h \
 		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QDebug \
 		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QTimer \
 		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qtimer.h \
 		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qbasictimer.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o graph.o ../graph.cpp
+
+state.o: ../state.cpp ../state.h
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o state.o ../state.cpp
 
 qrc_resources.o: qrc_resources.cpp 
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o qrc_resources.o qrc_resources.cpp

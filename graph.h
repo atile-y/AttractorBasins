@@ -1,6 +1,10 @@
 #ifndef GRAPH_H
 #define GRAPH_H
 
+#define STOP    1
+#define PAUSE   2
+#define PLAY    3
+
 #include <QOpenGLWidget>
 
 class Graph : public QOpenGLWidget {
@@ -26,15 +30,13 @@ protected:
     void initializeGL();
     void resizeGL(int, int);
     void paintGL();
-    //void mousePressEvent(QMouseEvent *);
-    //void mouseMoveEvent(QMouseEvent *);
-    //void keyPressEvent(QKeyEvent *);
 
 private:
     bool Inicializa();
 
     uint m_nSize;
     uint m_nRule;
+    uint m_nState;
 };
 
 #endif // GRAPH_H

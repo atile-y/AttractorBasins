@@ -15,8 +15,11 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->ruleLineEdit->setValidator(v);
 
     G = new Graph(this);
+    G->setSize(20);
+    G->setRule(60);
 
     setFixedSize(geometry().width(), geometry().height());
+    move(100, 100);
 }
 
 MainWindow::~MainWindow(){
@@ -56,6 +59,8 @@ void MainWindow::on_stopPushButton_clicked(){
     ui->stopPushButton->setEnabled(false);
     ui->pausePushButton->setEnabled(false);
     ui->playPushButton->setEnabled(true);
+    ui->sizeLineEdit->setEnabled(true);
+    ui->ruleLineEdit->setEnabled(true);
 }
 
 void MainWindow::on_pausePushButton_clicked(){
@@ -73,4 +78,6 @@ void MainWindow::on_playPushButton_clicked(){
     ui->stopPushButton->setEnabled(true);
     ui->pausePushButton->setEnabled(true);
     ui->playPushButton->setEnabled(false);
+    ui->sizeLineEdit->setEnabled(false);
+    ui->ruleLineEdit->setEnabled(false);
 }
