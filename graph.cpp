@@ -9,9 +9,11 @@ Graph::Graph(QWidget *parent) : QOpenGLWidget(parent){
     setWindowTitle(tr("Graph"));
     setMinimumWidth(400);
     setMinimumHeight(400);
-    resize(800, 600);
+    resize(500, 500);
 
     m_nState = STOP;
+    m_Work = NULL;
+    m_Thread = NULL;
 
     QTimer *timer = new QTimer(this);
     connect(timer, SIGNAL(timeout()), this, SLOT(Idle()));
@@ -21,22 +23,37 @@ Graph::Graph(QWidget *parent) : QOpenGLWidget(parent){
 Graph::~Graph(){
     while( !children().isEmpty() )
         delete children()[0];
-    for(State *s : m_vGraph)
+    qInfo() << "DESTRUCTOR";
+    qInfo() << "Lenght: " << m_vGraph.size();
+    for(State *s : m_vGraph){
+        qInfo() << s;
         if( s != NULL )
             delete s;
+    }
+    if( m_Work != NULL )
+        delete m_Work;
+    if( m_Thread != NULL )
+        delete m_Thread;
 }
 
 void Graph::play(){
-    if( m_nState == STOP )
+    if( m_nState == STOP ){
         reset();
 
-    State *s = new State(m_nSize);
-    m_vGraph.append(s);
+        State *s = new State(m_nSize);
+        m_vGraph.append(s);
+        qInfo() << "S_0(" << s << "): " << s->getStrTape();
 
-    th = new Thread(*s, m_nRule);
-    connect(th, SIGNAL(stateReady(State)), this, SLOT(handleState(State)));
-    connect(th, SIGNAL(stateError()), this, SLOT(handleError()));
-    th->start();
+        m_Thread = new QThread();
+        m_Work = new Worker(s, m_nRule);
+        m_Work->moveToThread(m_Thread);
+
+        connect(m_Work, SIGNAL(stateError()), this, SLOT(handleError()));
+        connect(m_Thread, SIGNAL(started()), m_Work, SLOT(doWork()));
+        connect(m_Work, SIGNAL(stateReady(State*)), this, SLOT(handleState(State*)));
+
+        m_Thread->start();
+    }
 
     m_nState = PLAY;
     paintGL();
@@ -48,6 +65,13 @@ void Graph::pause(){
 }
 
 void Graph::reset(){
+    if( m_Thread != NULL ){
+        m_Thread->quit();
+        m_Thread->deleteLater();
+    }
+    if( m_Work != NULL )
+        m_Work->deleteLater();
+
     for(State *s : m_vGraph)
         if( s != NULL )
             delete s;
@@ -60,6 +84,51 @@ void Graph::reset(){
 
 void Graph::Idle(){
     paintGL();
+}
+
+void Graph::handleState(State *state){
+    State *find = NULL;
+
+    qInfo() << "S_1(" << state << "): " << state->getStrTape();
+
+    for(State *s : m_vGraph)
+        if( s->equals(state) )
+            find = s;
+
+    qInfo() << "find(" << find << ")";
+
+    if( find != NULL ){
+        m_vGraph.takeLast()->setNext(find);
+
+        State *ns;
+        do{
+            find = NULL;
+            ns = new State(m_nSize);
+            for(State *s : m_vGraph)
+                if( s->equals(ns) )
+                    find = s;
+        }
+        while( find != NULL );
+
+        m_vGraph.append(ns);
+        m_Thread->quit();
+        m_Thread->deleteLater();
+        m_Work->deleteLater();
+    }
+    else{
+        m_vGraph.back()->setNext(state);
+        qInfo() << "   next(" << m_vGraph.back()->getNext() << ")";
+        m_vGraph.append(state);
+        m_Thread->run();
+    }
+
+    qInfo() << "Length: " << m_vGraph.size();
+    qInfo() << "Last(" << m_vGraph.back() << "): " << m_vGraph.back()->getStrTape();
+}
+
+void Graph::handleError(){
+    qInfo() << "handleError()";
+    //m_Work->start();
 }
 
 void Graph::initializeGL(){
@@ -91,19 +160,12 @@ void Graph::paintGL(){
     glLoadIdentity();
 
     glColor3f(0.5, 0.5, 0.8);
-    glBegin(GL_TRIANGLES);
-        glVertex2i(-100, -100);
-        glVertex2i(0, 100);
-        glVertex2i(100, -100);
+    glBegin(GL_LINES);
+        for(int i=0;i<m_vGraph.size();i++){
+            glVertex2i(i, -100);
+            glVertex2i(i, 100);
+        }
     glEnd();
-}
-
-void Graph::handleState(State s){
-
-}
-
-void Graph::handleError(){
-
 }
 
 bool Graph::Inicializa(){

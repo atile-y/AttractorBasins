@@ -6,9 +6,10 @@
 #define PLAY    3
 
 #include <QOpenGLWidget>
+#include <QThread>
 
 #include "state.h"
-#include "thread.h"
+#include "worker.h"
 
 class Graph : public QOpenGLWidget {
     Q_OBJECT
@@ -28,15 +29,13 @@ public:
 
 public slots:
     void Idle();
+    void handleState(State*);
+    void handleError();
 
 protected:
     void initializeGL();
     void resizeGL(int, int);
     void paintGL();
-
-private slots:
-    void handleState(State);
-    void handleError();
 
 private:
     bool Inicializa();
@@ -45,7 +44,8 @@ private:
     uint m_nRule;
     uint m_nState;
     QVector<State*> m_vGraph;
-    Thread *th;
+    Worker *m_Work;
+    QThread *m_Thread;
 };
 
 #endif // GRAPH_H

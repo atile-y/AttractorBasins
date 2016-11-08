@@ -98,3 +98,41 @@ State* State::evolve(uint rule){
 
     return res;
 }
+
+State* State::clone(){
+    State *s = new State();
+
+    s->m_sNext = this->m_sNext;
+    s->m_nSize = this->m_nSize;
+    s->m_nVSize = this->m_nVSize;
+    s->m_vTape = new bool[s->m_nSize];
+    memcpy(s->m_vTape, this->m_vTape, s->m_nSize*sizeof(s->m_vTape[0]));
+    s->m_vValue = new uint64_t[s->m_nVSize];
+    memcpy(s->m_vValue, this->m_vValue, s->m_nVSize*sizeof(s->m_vValue[0]));
+
+    return s;
+}
+
+bool State::equals(State *s){
+    if( s->m_sNext != this->m_sNext || s->m_nSize != this->m_nSize
+     || s->m_nVSize != this->m_nVSize ){
+        return false;
+    }
+
+    for(uint i=0;i<s->m_nSize;i++)
+        if( s->m_vTape[i] != this->m_vTape[i] )
+            return false;
+
+    for(uint i=0;i<s->m_nVSize;i++)
+        if( s->m_vValue[i] != this->m_vValue[i] )
+            return false;
+
+    return true;
+}
+
+QString State::getStrTape(){
+    QString str = "";
+    for(uint i=0;i<m_nSize;i++)
+        str += (m_vTape[i]?"1":"0");
+    return str;
+}

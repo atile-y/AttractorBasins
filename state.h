@@ -1,6 +1,8 @@
 #ifndef STATE_H
 #define STATE_H
 
+#include <QString>
+
 #include <random>
 
 class State{
@@ -18,6 +20,9 @@ public:
     void setNext(State *s){ m_sNext = s; }
 
     State* evolve(uint);
+    State* clone();
+    bool equals(State *);
+    QString getStrTape();
 
 private:
     State *m_sNext;

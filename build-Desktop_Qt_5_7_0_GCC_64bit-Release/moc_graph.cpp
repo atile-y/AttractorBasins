@@ -20,7 +20,7 @@
 QT_BEGIN_MOC_NAMESPACE
 struct qt_meta_stringdata_Graph_t {
     QByteArrayData data[6];
-    char stringdata0[42];
+    char stringdata0[43];
 };
 #define QT_MOC_LITERAL(idx, ofs, len) \
     Q_STATIC_BYTE_ARRAY_DATA_HEADER_INITIALIZER_WITH_OFFSET(len, \
@@ -33,11 +33,12 @@ QT_MOC_LITERAL(0, 0, 5), // "Graph"
 QT_MOC_LITERAL(1, 6, 4), // "Idle"
 QT_MOC_LITERAL(2, 11, 0), // ""
 QT_MOC_LITERAL(3, 12, 11), // "handleState"
-QT_MOC_LITERAL(4, 24, 5), // "State"
-QT_MOC_LITERAL(5, 30, 11) // "handleError"
+QT_MOC_LITERAL(4, 24, 6), // "State*"
+QT_MOC_LITERAL(5, 31, 11) // "handleError"
 
     },
-    "Graph\0Idle\0\0handleState\0State\0handleError"
+    "Graph\0Idle\0\0handleState\0State*\0"
+    "handleError"
 };
 #undef QT_MOC_LITERAL
 
@@ -56,8 +57,8 @@ static const uint qt_meta_data_Graph[] = {
 
  // slots: name, argc, parameters, tag, flags
        1,    0,   29,    2, 0x0a /* Public */,
-       3,    1,   30,    2, 0x08 /* Private */,
-       5,    0,   33,    2, 0x08 /* Private */,
+       3,    1,   30,    2, 0x0a /* Public */,
+       5,    0,   33,    2, 0x0a /* Public */,
 
  // slots: parameters
     QMetaType::Void,
@@ -74,7 +75,7 @@ void Graph::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, void 
         Q_UNUSED(_t)
         switch (_id) {
         case 0: _t->Idle(); break;
-        case 1: _t->handleState((*reinterpret_cast< State(*)>(_a[1]))); break;
+        case 1: _t->handleState((*reinterpret_cast< State*(*)>(_a[1]))); break;
         case 2: _t->handleError(); break;
         default: ;
         }

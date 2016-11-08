@@ -52,19 +52,19 @@ SOURCES       = ../main.cpp \
 		../mainwindow.cpp \
 		../graph.cpp \
 		../state.cpp \
-		../thread.cpp qrc_resources.cpp \
+		../worker.cpp qrc_resources.cpp \
 		moc_mainwindow.cpp \
 		moc_graph.cpp \
-		moc_thread.cpp
+		moc_worker.cpp
 OBJECTS       = main.o \
 		mainwindow.o \
 		graph.o \
 		state.o \
-		thread.o \
+		worker.o \
 		qrc_resources.o \
 		moc_mainwindow.o \
 		moc_graph.o \
-		moc_thread.o
+		moc_worker.o
 DIST          = /home/Qt5.7.0/5.7/gcc_64/mkspecs/features/spec_pre.prf \
 		/home/Qt5.7.0/5.7/gcc_64/mkspecs/common/unix.conf \
 		/home/Qt5.7.0/5.7/gcc_64/mkspecs/common/linux.conf \
@@ -216,11 +216,11 @@ DIST          = /home/Qt5.7.0/5.7/gcc_64/mkspecs/features/spec_pre.prf \
 		../../AttractorBasins.pro ../mainwindow.h \
 		../graph.h \
 		../state.h \
-		../thread.h ../main.cpp \
+		../worker.h ../main.cpp \
 		../mainwindow.cpp \
 		../graph.cpp \
 		../state.cpp \
-		../thread.cpp
+		../worker.cpp
 QMAKE_TARGET  = AttractorBasins
 DESTDIR       = 
 TARGET        = AttractorBasins
@@ -554,8 +554,8 @@ distdir: FORCE
 	@test -d $(DISTDIR) || mkdir -p $(DISTDIR)
 	$(COPY_FILE) --parents $(DIST) $(DISTDIR)/
 	$(COPY_FILE) --parents ../resources.qrc $(DISTDIR)/
-	$(COPY_FILE) --parents ../mainwindow.h ../graph.h ../state.h ../thread.h $(DISTDIR)/
-	$(COPY_FILE) --parents ../main.cpp ../mainwindow.cpp ../graph.cpp ../state.cpp ../thread.cpp $(DISTDIR)/
+	$(COPY_FILE) --parents ../mainwindow.h ../graph.h ../state.h ../worker.h $(DISTDIR)/
+	$(COPY_FILE) --parents ../main.cpp ../mainwindow.cpp ../graph.cpp ../state.cpp ../worker.cpp $(DISTDIR)/
 	$(COPY_FILE) --parents ../mainwindow.ui $(DISTDIR)/
 
 
@@ -590,9 +590,9 @@ qrc_resources.cpp: ../resources.qrc \
 		../data/images/pause.png
 	/home/atile/Qt5.7.0/5.7/gcc_64/bin/rcc -name resources ../resources.qrc -o qrc_resources.cpp
 
-compiler_moc_header_make_all: moc_mainwindow.cpp moc_graph.cpp moc_thread.cpp
+compiler_moc_header_make_all: moc_mainwindow.cpp moc_graph.cpp moc_worker.cpp
 compiler_moc_header_clean:
-	-$(DEL_FILE) moc_mainwindow.cpp moc_graph.cpp moc_thread.cpp
+	-$(DEL_FILE) moc_mainwindow.cpp moc_graph.cpp moc_worker.cpp
 moc_mainwindow.cpp: ../graph.h \
 		../../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QOpenGLWidget \
 		../../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qopenglwidget.h \
@@ -700,6 +700,8 @@ moc_mainwindow.cpp: ../graph.h \
 		../../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qopengles2ext.h \
 		../../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qopenglext.h \
 		../state.h \
+		../worker.h \
+		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QObject \
 		../../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QMainWindow \
 		../../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qmainwindow.h \
 		../../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qtabwidget.h \
@@ -814,13 +816,14 @@ moc_graph.cpp: ../../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QOpenGLWidget \
 		../../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qopengles2ext.h \
 		../../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qopenglext.h \
 		../state.h \
+		../worker.h \
+		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QObject \
 		../graph.h \
 		../../../../Qt5.7.0/5.7/gcc_64/bin/moc
 	/home/atile/Qt5.7.0/5.7/gcc_64/bin/moc $(DEFINES) -I/home/atile/Qt5.7.0/5.7/gcc_64/mkspecs/linux-g++ -I'/home/atile/Documentos/Qt Projects/AttractorBasins' -I/home/atile/Qt5.7.0/5.7/gcc_64/include -I/home/atile/Qt5.7.0/5.7/gcc_64/include/QtWidgets -I/home/atile/Qt5.7.0/5.7/gcc_64/include/QtGui -I/home/atile/Qt5.7.0/5.7/gcc_64/include/QtCore -I. -I/usr/include/c++/4.8 -I/usr/include/x86_64-linux-gnu/c++/4.8 -I/usr/include/c++/4.8/backward -I/usr/lib/gcc/x86_64-linux-gnu/4.8/include -I/usr/local/include -I/usr/lib/gcc/x86_64-linux-gnu/4.8/include-fixed -I/usr/include/x86_64-linux-gnu -I/usr/include ../graph.h -o moc_graph.cpp
 
-moc_thread.cpp: ../state.h \
-		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QThread \
-		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qthread.h \
+moc_worker.cpp: ../state.h \
+		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QObject \
 		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qobject.h \
 		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qobjectdefs.h \
 		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qnamespace.h \
@@ -868,9 +871,9 @@ moc_thread.cpp: ../state.h \
 		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qvarlengtharray.h \
 		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qcontainerfwd.h \
 		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qobject_impl.h \
-		../thread.h \
+		../worker.h \
 		../../../../Qt5.7.0/5.7/gcc_64/bin/moc
-	/home/atile/Qt5.7.0/5.7/gcc_64/bin/moc $(DEFINES) -I/home/atile/Qt5.7.0/5.7/gcc_64/mkspecs/linux-g++ -I'/home/atile/Documentos/Qt Projects/AttractorBasins' -I/home/atile/Qt5.7.0/5.7/gcc_64/include -I/home/atile/Qt5.7.0/5.7/gcc_64/include/QtWidgets -I/home/atile/Qt5.7.0/5.7/gcc_64/include/QtGui -I/home/atile/Qt5.7.0/5.7/gcc_64/include/QtCore -I. -I/usr/include/c++/4.8 -I/usr/include/x86_64-linux-gnu/c++/4.8 -I/usr/include/c++/4.8/backward -I/usr/lib/gcc/x86_64-linux-gnu/4.8/include -I/usr/local/include -I/usr/lib/gcc/x86_64-linux-gnu/4.8/include-fixed -I/usr/include/x86_64-linux-gnu -I/usr/include ../thread.h -o moc_thread.cpp
+	/home/atile/Qt5.7.0/5.7/gcc_64/bin/moc $(DEFINES) -I/home/atile/Qt5.7.0/5.7/gcc_64/mkspecs/linux-g++ -I'/home/atile/Documentos/Qt Projects/AttractorBasins' -I/home/atile/Qt5.7.0/5.7/gcc_64/include -I/home/atile/Qt5.7.0/5.7/gcc_64/include/QtWidgets -I/home/atile/Qt5.7.0/5.7/gcc_64/include/QtGui -I/home/atile/Qt5.7.0/5.7/gcc_64/include/QtCore -I. -I/usr/include/c++/4.8 -I/usr/include/x86_64-linux-gnu/c++/4.8 -I/usr/include/c++/4.8/backward -I/usr/lib/gcc/x86_64-linux-gnu/4.8/include -I/usr/local/include -I/usr/lib/gcc/x86_64-linux-gnu/4.8/include-fixed -I/usr/include/x86_64-linux-gnu -I/usr/include ../worker.h -o moc_worker.cpp
 
 compiler_moc_source_make_all:
 compiler_moc_source_clean:
@@ -999,6 +1002,8 @@ main.o: ../main.cpp ../mainwindow.h \
 		../../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qopengles2ext.h \
 		../../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qopenglext.h \
 		../state.h \
+		../worker.h \
+		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QObject \
 		../../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QMainWindow \
 		../../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qmainwindow.h \
 		../../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qtabwidget.h \
@@ -1120,6 +1125,8 @@ mainwindow.o: ../mainwindow.cpp ../mainwindow.h \
 		../../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qopengles2ext.h \
 		../../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qopenglext.h \
 		../state.h \
+		../worker.h \
+		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QObject \
 		../../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QMainWindow \
 		../../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qmainwindow.h \
 		../../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qtabwidget.h \
@@ -1282,6 +1289,8 @@ graph.o: ../graph.cpp ../graph.h \
 		../../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qopengles2ext.h \
 		../../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qopenglext.h \
 		../state.h \
+		../worker.h \
+		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QObject \
 		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QDebug \
 		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QTimer \
 		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qtimer.h \
@@ -1353,10 +1362,9 @@ state.o: ../state.cpp ../state.h \
 		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qsharedpointer_impl.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o state.o ../state.cpp
 
-thread.o: ../thread.cpp ../thread.h \
+worker.o: ../worker.cpp ../worker.h \
 		../state.h \
-		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QThread \
-		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qthread.h \
+		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QObject \
 		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qobject.h \
 		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qobjectdefs.h \
 		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qnamespace.h \
@@ -1404,7 +1412,7 @@ thread.o: ../thread.cpp ../thread.h \
 		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qvarlengtharray.h \
 		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qcontainerfwd.h \
 		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qobject_impl.h
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o thread.o ../thread.cpp
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o worker.o ../worker.cpp
 
 qrc_resources.o: qrc_resources.cpp 
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o qrc_resources.o qrc_resources.cpp
@@ -1415,8 +1423,8 @@ moc_mainwindow.o: moc_mainwindow.cpp
 moc_graph.o: moc_graph.cpp 
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o moc_graph.o moc_graph.cpp
 
-moc_thread.o: moc_thread.cpp 
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o moc_thread.o moc_thread.cpp
+moc_worker.o: moc_worker.cpp 
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o moc_worker.o moc_worker.cpp
 
 ####### Install
 

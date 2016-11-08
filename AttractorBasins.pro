@@ -17,13 +17,13 @@ SOURCES += main.cpp \
     mainwindow.cpp \
     graph.cpp \
     state.cpp \
-    thread.cpp
+    worker.cpp
 
 HEADERS  += \
     mainwindow.h \
     graph.h \
     state.h \
-    thread.h
+    worker.h
 
 FORMS    += \
     mainwindow.ui
