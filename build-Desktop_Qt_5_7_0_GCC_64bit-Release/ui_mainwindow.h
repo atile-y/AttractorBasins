@@ -116,9 +116,9 @@ public:
     {
         MainWindow->setWindowTitle(QApplication::translate("MainWindow", "Attractors", 0));
         sizeLabel->setText(QApplication::translate("MainWindow", "Size", 0));
-        sizeLineEdit->setText(QApplication::translate("MainWindow", "20", 0));
+        sizeLineEdit->setText(QApplication::translate("MainWindow", "9", 0));
         ruleLabel->setText(QApplication::translate("MainWindow", "Rule", 0));
-        ruleLineEdit->setText(QApplication::translate("MainWindow", "60", 0));
+        ruleLineEdit->setText(QApplication::translate("MainWindow", "193", 0));
         stopPushButton->setText(QString());
         pausePushButton->setText(QString());
         playPushButton->setText(QString());

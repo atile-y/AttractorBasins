@@ -2,6 +2,7 @@
 #define STATE_H
 
 #include <QString>
+#include <QVector>
 
 #include <random>
 
@@ -14,8 +15,7 @@ public:
     State* getNext(){ return m_sNext; }
     uint getSize(){ return m_nSize; }
     uint getVSize(){ return m_nVSize; }
-    bool* getTape(){ return m_vTape; }
-    uint64_t* getValues(){ return m_vValue; }
+    uint64_t* getValues(){ return m_vValue[0]; }
 
     void setNext(State *s){ m_sNext = s; }
 
@@ -28,8 +28,7 @@ private:
     State *m_sNext;
     uint m_nSize;
     uint m_nVSize;
-    bool *m_vTape;
-    uint64_t *m_vValue;
+    QVector<uint64_t*> m_vValue;
 
     static unsigned seed;
     static std::default_random_engine generator;

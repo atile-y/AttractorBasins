@@ -60,14 +60,14 @@ static const uint qt_meta_data_Worker[] = {
        4,    0,   32,    2, 0x06 /* Public */,
 
  // slots: name, argc, parameters, tag, flags
-       5,    0,   33,    2, 0x0a /* Public */,
+       5,    2,   33,    2, 0x0a /* Public */,
 
  // signals: parameters
     QMetaType::Void, 0x80000000 | 3,    2,
     QMetaType::Void,
 
  // slots: parameters
-    QMetaType::Void,
+    QMetaType::Void, 0x80000000 | 3, QMetaType::UInt,    2,    2,
 
        0        // eod
 };
@@ -80,7 +80,7 @@ void Worker::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, void
         switch (_id) {
         case 0: _t->stateReady((*reinterpret_cast< State*(*)>(_a[1]))); break;
         case 1: _t->stateError(); break;
-        case 2: _t->doWork(); break;
+        case 2: _t->doWork((*reinterpret_cast< State*(*)>(_a[1])),(*reinterpret_cast< uint(*)>(_a[2]))); break;
         default: ;
         }
     } else if (_c == QMetaObject::IndexOfMethod) {

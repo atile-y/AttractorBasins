@@ -32,6 +32,9 @@ public slots:
     void handleState(State*);
     void handleError();
 
+signals:
+    void operate(State*, uint);
+
 protected:
     void initializeGL();
     void resizeGL(int, int);

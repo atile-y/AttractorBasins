@@ -8,15 +8,15 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setupUi(this);
 
     QIntValidator *v = new QIntValidator(ui->sizeLineEdit);
-    v->setBottom(1);
+    v->setBottom(2);
     ui->sizeLineEdit->setValidator(v);
 
     v = new QIntValidator(0, 255, ui->ruleLineEdit);
     ui->ruleLineEdit->setValidator(v);
 
     G = new Graph(this);
-    G->setSize(20);
-    G->setRule(60);
+    G->setSize(9);
+    G->setRule(193);
 
     setFixedSize(geometry().width(), geometry().height());
     move(100, 100);
