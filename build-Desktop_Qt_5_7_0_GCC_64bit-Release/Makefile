@@ -50,21 +50,23 @@ OBJECTS_DIR   = ./
 
 SOURCES       = ../main.cpp \
 		../mainwindow.cpp \
-		../graph.cpp \
 		../state.cpp \
-		../worker.cpp qrc_resources.cpp \
+		../worker.cpp \
+		../glwidget.cpp \
+		../graph.cpp qrc_resources.cpp \
 		moc_mainwindow.cpp \
-		moc_graph.cpp \
-		moc_worker.cpp
+		moc_worker.cpp \
+		moc_glwidget.cpp
 OBJECTS       = main.o \
 		mainwindow.o \
-		graph.o \
 		state.o \
 		worker.o \
+		glwidget.o \
+		graph.o \
 		qrc_resources.o \
 		moc_mainwindow.o \
-		moc_graph.o \
-		moc_worker.o
+		moc_worker.o \
+		moc_glwidget.o
 DIST          = /home/Qt5.7.0/5.7/gcc_64/mkspecs/features/spec_pre.prf \
 		/home/Qt5.7.0/5.7/gcc_64/mkspecs/common/unix.conf \
 		/home/Qt5.7.0/5.7/gcc_64/mkspecs/common/linux.conf \
@@ -214,13 +216,15 @@ DIST          = /home/Qt5.7.0/5.7/gcc_64/mkspecs/features/spec_pre.prf \
 		/home/Qt5.7.0/5.7/gcc_64/mkspecs/features/yacc.prf \
 		/home/Qt5.7.0/5.7/gcc_64/mkspecs/features/lex.prf \
 		../../AttractorBasins.pro ../mainwindow.h \
-		../graph.h \
 		../state.h \
-		../worker.h ../main.cpp \
+		../worker.h \
+		../glwidget.h \
+		../graph.h ../main.cpp \
 		../mainwindow.cpp \
-		../graph.cpp \
 		../state.cpp \
-		../worker.cpp
+		../worker.cpp \
+		../glwidget.cpp \
+		../graph.cpp
 QMAKE_TARGET  = AttractorBasins
 DESTDIR       = 
 TARGET        = AttractorBasins
@@ -554,8 +558,8 @@ distdir: FORCE
 	@test -d $(DISTDIR) || mkdir -p $(DISTDIR)
 	$(COPY_FILE) --parents $(DIST) $(DISTDIR)/
 	$(COPY_FILE) --parents ../resources.qrc $(DISTDIR)/
-	$(COPY_FILE) --parents ../mainwindow.h ../graph.h ../state.h ../worker.h $(DISTDIR)/
-	$(COPY_FILE) --parents ../main.cpp ../mainwindow.cpp ../graph.cpp ../state.cpp ../worker.cpp $(DISTDIR)/
+	$(COPY_FILE) --parents ../mainwindow.h ../state.h ../worker.h ../glwidget.h ../graph.h $(DISTDIR)/
+	$(COPY_FILE) --parents ../main.cpp ../mainwindow.cpp ../state.cpp ../worker.cpp ../glwidget.cpp ../graph.cpp $(DISTDIR)/
 	$(COPY_FILE) --parents ../mainwindow.ui $(DISTDIR)/
 
 
@@ -590,10 +594,10 @@ qrc_resources.cpp: ../resources.qrc \
 		../data/images/pause.png
 	/home/atile/Qt5.7.0/5.7/gcc_64/bin/rcc -name resources ../resources.qrc -o qrc_resources.cpp
 
-compiler_moc_header_make_all: moc_mainwindow.cpp moc_graph.cpp moc_worker.cpp
+compiler_moc_header_make_all: moc_mainwindow.cpp moc_worker.cpp moc_glwidget.cpp
 compiler_moc_header_clean:
-	-$(DEL_FILE) moc_mainwindow.cpp moc_graph.cpp moc_worker.cpp
-moc_mainwindow.cpp: ../graph.h \
+	-$(DEL_FILE) moc_mainwindow.cpp moc_worker.cpp moc_glwidget.cpp
+moc_mainwindow.cpp: ../glwidget.h \
 		../../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QOpenGLWidget \
 		../../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qopenglwidget.h \
 		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qglobal.h \
@@ -699,8 +703,14 @@ moc_mainwindow.cpp: ../graph.h \
 		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qt_windows.h \
 		../../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qopengles2ext.h \
 		../../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qopenglext.h \
-		../state.h \
+		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QThread \
+		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qthread.h \
+		../graph.h \
 		../worker.h \
+		../state.h \
+		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QPointF \
+		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QString \
+		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QVector \
 		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QObject \
 		../../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QMainWindow \
 		../../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qmainwindow.h \
@@ -710,7 +720,65 @@ moc_mainwindow.cpp: ../graph.h \
 		../../../../Qt5.7.0/5.7/gcc_64/bin/moc
 	/home/atile/Qt5.7.0/5.7/gcc_64/bin/moc $(DEFINES) -I/home/atile/Qt5.7.0/5.7/gcc_64/mkspecs/linux-g++ -I'/home/atile/Documentos/Qt Projects/AttractorBasins' -I/home/atile/Qt5.7.0/5.7/gcc_64/include -I/home/atile/Qt5.7.0/5.7/gcc_64/include/QtWidgets -I/home/atile/Qt5.7.0/5.7/gcc_64/include/QtGui -I/home/atile/Qt5.7.0/5.7/gcc_64/include/QtCore -I. -I/usr/include/c++/4.8 -I/usr/include/x86_64-linux-gnu/c++/4.8 -I/usr/include/c++/4.8/backward -I/usr/lib/gcc/x86_64-linux-gnu/4.8/include -I/usr/local/include -I/usr/lib/gcc/x86_64-linux-gnu/4.8/include-fixed -I/usr/include/x86_64-linux-gnu -I/usr/include ../mainwindow.h -o moc_mainwindow.cpp
 
-moc_graph.cpp: ../../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QOpenGLWidget \
+moc_worker.cpp: ../state.h \
+		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QPointF \
+		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qpoint.h \
+		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qnamespace.h \
+		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qglobal.h \
+		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qconfig.h \
+		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qfeatures.h \
+		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qsystemdetection.h \
+		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qprocessordetection.h \
+		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qcompilerdetection.h \
+		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qtypeinfo.h \
+		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qtypetraits.h \
+		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qisenum.h \
+		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qsysinfo.h \
+		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qlogging.h \
+		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qflags.h \
+		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qatomic.h \
+		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qbasicatomic.h \
+		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qatomic_bootstrap.h \
+		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qgenericatomic.h \
+		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qatomic_cxx11.h \
+		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qatomic_msvc.h \
+		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qglobalstatic.h \
+		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qmutex.h \
+		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qnumeric.h \
+		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qversiontagging.h \
+		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QString \
+		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qstring.h \
+		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qchar.h \
+		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qbytearray.h \
+		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qrefcount.h \
+		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qarraydata.h \
+		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qstringbuilder.h \
+		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QVector \
+		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qvector.h \
+		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qalgorithms.h \
+		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qiterator.h \
+		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qlist.h \
+		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qhashfunctions.h \
+		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qpair.h \
+		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qbytearraylist.h \
+		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qstringlist.h \
+		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qregexp.h \
+		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qstringmatcher.h \
+		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QObject \
+		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qobject.h \
+		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qobjectdefs.h \
+		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qobjectdefs_impl.h \
+		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qcoreevent.h \
+		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qscopedpointer.h \
+		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qmetatype.h \
+		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qvarlengtharray.h \
+		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qcontainerfwd.h \
+		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qobject_impl.h \
+		../worker.h \
+		../../../../Qt5.7.0/5.7/gcc_64/bin/moc
+	/home/atile/Qt5.7.0/5.7/gcc_64/bin/moc $(DEFINES) -I/home/atile/Qt5.7.0/5.7/gcc_64/mkspecs/linux-g++ -I'/home/atile/Documentos/Qt Projects/AttractorBasins' -I/home/atile/Qt5.7.0/5.7/gcc_64/include -I/home/atile/Qt5.7.0/5.7/gcc_64/include/QtWidgets -I/home/atile/Qt5.7.0/5.7/gcc_64/include/QtGui -I/home/atile/Qt5.7.0/5.7/gcc_64/include/QtCore -I. -I/usr/include/c++/4.8 -I/usr/include/x86_64-linux-gnu/c++/4.8 -I/usr/include/c++/4.8/backward -I/usr/lib/gcc/x86_64-linux-gnu/4.8/include -I/usr/local/include -I/usr/lib/gcc/x86_64-linux-gnu/4.8/include-fixed -I/usr/include/x86_64-linux-gnu -I/usr/include ../worker.h -o moc_worker.cpp
+
+moc_glwidget.cpp: ../../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QOpenGLWidget \
 		../../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qopenglwidget.h \
 		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qglobal.h \
 		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qconfig.h \
@@ -815,65 +883,18 @@ moc_graph.cpp: ../../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QOpenGLWidget \
 		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qt_windows.h \
 		../../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qopengles2ext.h \
 		../../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qopenglext.h \
-		../state.h \
-		../worker.h \
-		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QObject \
+		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QThread \
+		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qthread.h \
 		../graph.h \
-		../../../../Qt5.7.0/5.7/gcc_64/bin/moc
-	/home/atile/Qt5.7.0/5.7/gcc_64/bin/moc $(DEFINES) -I/home/atile/Qt5.7.0/5.7/gcc_64/mkspecs/linux-g++ -I'/home/atile/Documentos/Qt Projects/AttractorBasins' -I/home/atile/Qt5.7.0/5.7/gcc_64/include -I/home/atile/Qt5.7.0/5.7/gcc_64/include/QtWidgets -I/home/atile/Qt5.7.0/5.7/gcc_64/include/QtGui -I/home/atile/Qt5.7.0/5.7/gcc_64/include/QtCore -I. -I/usr/include/c++/4.8 -I/usr/include/x86_64-linux-gnu/c++/4.8 -I/usr/include/c++/4.8/backward -I/usr/lib/gcc/x86_64-linux-gnu/4.8/include -I/usr/local/include -I/usr/lib/gcc/x86_64-linux-gnu/4.8/include-fixed -I/usr/include/x86_64-linux-gnu -I/usr/include ../graph.h -o moc_graph.cpp
-
-moc_worker.cpp: ../state.h \
-		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QObject \
-		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qobject.h \
-		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qobjectdefs.h \
-		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qnamespace.h \
-		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qglobal.h \
-		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qconfig.h \
-		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qfeatures.h \
-		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qsystemdetection.h \
-		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qprocessordetection.h \
-		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qcompilerdetection.h \
-		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qtypeinfo.h \
-		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qtypetraits.h \
-		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qisenum.h \
-		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qsysinfo.h \
-		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qlogging.h \
-		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qflags.h \
-		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qatomic.h \
-		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qbasicatomic.h \
-		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qatomic_bootstrap.h \
-		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qgenericatomic.h \
-		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qatomic_cxx11.h \
-		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qatomic_msvc.h \
-		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qglobalstatic.h \
-		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qmutex.h \
-		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qnumeric.h \
-		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qversiontagging.h \
-		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qobjectdefs_impl.h \
-		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qstring.h \
-		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qchar.h \
-		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qbytearray.h \
-		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qrefcount.h \
-		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qarraydata.h \
-		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qstringbuilder.h \
-		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qlist.h \
-		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qalgorithms.h \
-		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qiterator.h \
-		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qhashfunctions.h \
-		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qpair.h \
-		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qbytearraylist.h \
-		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qstringlist.h \
-		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qregexp.h \
-		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qstringmatcher.h \
-		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qcoreevent.h \
-		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qscopedpointer.h \
-		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qmetatype.h \
-		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qvarlengtharray.h \
-		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qcontainerfwd.h \
-		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qobject_impl.h \
 		../worker.h \
+		../state.h \
+		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QPointF \
+		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QString \
+		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QVector \
+		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QObject \
+		../glwidget.h \
 		../../../../Qt5.7.0/5.7/gcc_64/bin/moc
-	/home/atile/Qt5.7.0/5.7/gcc_64/bin/moc $(DEFINES) -I/home/atile/Qt5.7.0/5.7/gcc_64/mkspecs/linux-g++ -I'/home/atile/Documentos/Qt Projects/AttractorBasins' -I/home/atile/Qt5.7.0/5.7/gcc_64/include -I/home/atile/Qt5.7.0/5.7/gcc_64/include/QtWidgets -I/home/atile/Qt5.7.0/5.7/gcc_64/include/QtGui -I/home/atile/Qt5.7.0/5.7/gcc_64/include/QtCore -I. -I/usr/include/c++/4.8 -I/usr/include/x86_64-linux-gnu/c++/4.8 -I/usr/include/c++/4.8/backward -I/usr/lib/gcc/x86_64-linux-gnu/4.8/include -I/usr/local/include -I/usr/lib/gcc/x86_64-linux-gnu/4.8/include-fixed -I/usr/include/x86_64-linux-gnu -I/usr/include ../worker.h -o moc_worker.cpp
+	/home/atile/Qt5.7.0/5.7/gcc_64/bin/moc $(DEFINES) -I/home/atile/Qt5.7.0/5.7/gcc_64/mkspecs/linux-g++ -I'/home/atile/Documentos/Qt Projects/AttractorBasins' -I/home/atile/Qt5.7.0/5.7/gcc_64/include -I/home/atile/Qt5.7.0/5.7/gcc_64/include/QtWidgets -I/home/atile/Qt5.7.0/5.7/gcc_64/include/QtGui -I/home/atile/Qt5.7.0/5.7/gcc_64/include/QtCore -I. -I/usr/include/c++/4.8 -I/usr/include/x86_64-linux-gnu/c++/4.8 -I/usr/include/c++/4.8/backward -I/usr/lib/gcc/x86_64-linux-gnu/4.8/include -I/usr/local/include -I/usr/lib/gcc/x86_64-linux-gnu/4.8/include-fixed -I/usr/include/x86_64-linux-gnu -I/usr/include ../glwidget.h -o moc_glwidget.cpp
 
 compiler_moc_source_make_all:
 compiler_moc_source_clean:
@@ -895,7 +916,7 @@ compiler_clean: compiler_rcc_clean compiler_moc_header_clean compiler_uic_clean
 ####### Compile
 
 main.o: ../main.cpp ../mainwindow.h \
-		../graph.h \
+		../glwidget.h \
 		../../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QOpenGLWidget \
 		../../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qopenglwidget.h \
 		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qglobal.h \
@@ -1001,8 +1022,14 @@ main.o: ../main.cpp ../mainwindow.h \
 		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qt_windows.h \
 		../../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qopengles2ext.h \
 		../../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qopenglext.h \
-		../state.h \
+		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QThread \
+		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qthread.h \
+		../graph.h \
 		../worker.h \
+		../state.h \
+		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QPointF \
+		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QString \
+		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QVector \
 		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QObject \
 		../../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QMainWindow \
 		../../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qmainwindow.h \
@@ -1018,7 +1045,7 @@ main.o: ../main.cpp ../mainwindow.h \
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o main.o ../main.cpp
 
 mainwindow.o: ../mainwindow.cpp ../mainwindow.h \
-		../graph.h \
+		../glwidget.h \
 		../../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QOpenGLWidget \
 		../../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qopenglwidget.h \
 		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qglobal.h \
@@ -1124,8 +1151,14 @@ mainwindow.o: ../mainwindow.cpp ../mainwindow.h \
 		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qt_windows.h \
 		../../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qopengles2ext.h \
 		../../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qopenglext.h \
-		../state.h \
+		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QThread \
+		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qthread.h \
+		../graph.h \
 		../worker.h \
+		../state.h \
+		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QPointF \
+		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QString \
+		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QVector \
 		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QObject \
 		../../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QMainWindow \
 		../../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qmainwindow.h \
@@ -1182,7 +1215,145 @@ mainwindow.o: ../mainwindow.cpp ../mainwindow.h \
 		../../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qabstractbutton.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o mainwindow.o ../mainwindow.cpp
 
-graph.o: ../graph.cpp ../graph.h \
+state.o: ../state.cpp ../state.h \
+		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QPointF \
+		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qpoint.h \
+		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qnamespace.h \
+		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qglobal.h \
+		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qconfig.h \
+		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qfeatures.h \
+		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qsystemdetection.h \
+		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qprocessordetection.h \
+		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qcompilerdetection.h \
+		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qtypeinfo.h \
+		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qtypetraits.h \
+		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qisenum.h \
+		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qsysinfo.h \
+		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qlogging.h \
+		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qflags.h \
+		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qatomic.h \
+		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qbasicatomic.h \
+		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qatomic_bootstrap.h \
+		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qgenericatomic.h \
+		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qatomic_cxx11.h \
+		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qatomic_msvc.h \
+		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qglobalstatic.h \
+		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qmutex.h \
+		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qnumeric.h \
+		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qversiontagging.h \
+		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QString \
+		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qstring.h \
+		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qchar.h \
+		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qbytearray.h \
+		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qrefcount.h \
+		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qarraydata.h \
+		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qstringbuilder.h \
+		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QVector \
+		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qvector.h \
+		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qalgorithms.h \
+		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qiterator.h \
+		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qlist.h \
+		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qhashfunctions.h \
+		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qpair.h \
+		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qbytearraylist.h \
+		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qstringlist.h \
+		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qregexp.h \
+		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qstringmatcher.h \
+		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QDebug \
+		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qdebug.h \
+		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qhash.h \
+		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qmap.h \
+		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qtextstream.h \
+		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qiodevice.h \
+		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qobject.h \
+		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qobjectdefs.h \
+		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qobjectdefs_impl.h \
+		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qcoreevent.h \
+		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qscopedpointer.h \
+		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qmetatype.h \
+		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qvarlengtharray.h \
+		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qcontainerfwd.h \
+		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qobject_impl.h \
+		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qlocale.h \
+		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qvariant.h \
+		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qshareddata.h \
+		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qset.h \
+		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qcontiguouscache.h \
+		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qsharedpointer.h \
+		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qsharedpointer_impl.h
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o state.o ../state.cpp
+
+worker.o: ../worker.cpp ../worker.h \
+		../state.h \
+		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QPointF \
+		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qpoint.h \
+		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qnamespace.h \
+		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qglobal.h \
+		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qconfig.h \
+		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qfeatures.h \
+		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qsystemdetection.h \
+		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qprocessordetection.h \
+		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qcompilerdetection.h \
+		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qtypeinfo.h \
+		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qtypetraits.h \
+		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qisenum.h \
+		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qsysinfo.h \
+		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qlogging.h \
+		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qflags.h \
+		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qatomic.h \
+		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qbasicatomic.h \
+		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qatomic_bootstrap.h \
+		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qgenericatomic.h \
+		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qatomic_cxx11.h \
+		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qatomic_msvc.h \
+		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qglobalstatic.h \
+		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qmutex.h \
+		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qnumeric.h \
+		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qversiontagging.h \
+		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QString \
+		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qstring.h \
+		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qchar.h \
+		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qbytearray.h \
+		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qrefcount.h \
+		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qarraydata.h \
+		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qstringbuilder.h \
+		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QVector \
+		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qvector.h \
+		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qalgorithms.h \
+		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qiterator.h \
+		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qlist.h \
+		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qhashfunctions.h \
+		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qpair.h \
+		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qbytearraylist.h \
+		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qstringlist.h \
+		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qregexp.h \
+		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qstringmatcher.h \
+		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QObject \
+		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qobject.h \
+		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qobjectdefs.h \
+		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qobjectdefs_impl.h \
+		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qcoreevent.h \
+		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qscopedpointer.h \
+		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qmetatype.h \
+		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qvarlengtharray.h \
+		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qcontainerfwd.h \
+		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qobject_impl.h \
+		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QDebug \
+		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qdebug.h \
+		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qhash.h \
+		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qmap.h \
+		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qtextstream.h \
+		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qiodevice.h \
+		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qlocale.h \
+		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qvariant.h \
+		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qshareddata.h \
+		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qset.h \
+		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qcontiguouscache.h \
+		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qsharedpointer.h \
+		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qsharedpointer_impl.h
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o worker.o ../worker.cpp
+
+glwidget.o: ../glwidget.cpp ../glwidget.h \
 		../../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/QOpenGLWidget \
 		../../../../Qt5.7.0/5.7/gcc_64/include/QtWidgets/qopenglwidget.h \
 		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qglobal.h \
@@ -1288,131 +1459,23 @@ graph.o: ../graph.cpp ../graph.h \
 		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qt_windows.h \
 		../../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qopengles2ext.h \
 		../../../../Qt5.7.0/5.7/gcc_64/include/QtGui/qopenglext.h \
-		../state.h \
+		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QThread \
+		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qthread.h \
+		../graph.h \
 		../worker.h \
+		../state.h \
+		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QPointF \
+		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QString \
+		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QVector \
 		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QObject \
 		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QDebug \
 		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QTimer \
 		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qtimer.h \
 		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qbasictimer.h
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o glwidget.o ../glwidget.cpp
+
+graph.o: ../graph.cpp ../graph.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o graph.o ../graph.cpp
-
-state.o: ../state.cpp ../state.h \
-		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QDebug \
-		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qdebug.h \
-		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qalgorithms.h \
-		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qglobal.h \
-		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qconfig.h \
-		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qfeatures.h \
-		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qsystemdetection.h \
-		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qprocessordetection.h \
-		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qcompilerdetection.h \
-		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qtypeinfo.h \
-		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qtypetraits.h \
-		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qisenum.h \
-		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qsysinfo.h \
-		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qlogging.h \
-		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qflags.h \
-		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qatomic.h \
-		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qbasicatomic.h \
-		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qatomic_bootstrap.h \
-		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qgenericatomic.h \
-		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qatomic_cxx11.h \
-		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qatomic_msvc.h \
-		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qglobalstatic.h \
-		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qmutex.h \
-		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qnumeric.h \
-		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qversiontagging.h \
-		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qhash.h \
-		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qchar.h \
-		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qiterator.h \
-		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qlist.h \
-		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qrefcount.h \
-		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qarraydata.h \
-		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qhashfunctions.h \
-		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qpair.h \
-		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qbytearraylist.h \
-		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qbytearray.h \
-		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qnamespace.h \
-		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qstring.h \
-		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qstringbuilder.h \
-		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qstringlist.h \
-		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qregexp.h \
-		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qstringmatcher.h \
-		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qmap.h \
-		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qtextstream.h \
-		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qiodevice.h \
-		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qobject.h \
-		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qobjectdefs.h \
-		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qobjectdefs_impl.h \
-		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qcoreevent.h \
-		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qscopedpointer.h \
-		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qmetatype.h \
-		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qvarlengtharray.h \
-		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qcontainerfwd.h \
-		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qobject_impl.h \
-		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qlocale.h \
-		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qvariant.h \
-		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qshareddata.h \
-		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qvector.h \
-		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qpoint.h \
-		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qset.h \
-		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qcontiguouscache.h \
-		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qsharedpointer.h \
-		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qsharedpointer_impl.h
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o state.o ../state.cpp
-
-worker.o: ../worker.cpp ../worker.h \
-		../state.h \
-		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/QObject \
-		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qobject.h \
-		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qobjectdefs.h \
-		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qnamespace.h \
-		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qglobal.h \
-		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qconfig.h \
-		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qfeatures.h \
-		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qsystemdetection.h \
-		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qprocessordetection.h \
-		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qcompilerdetection.h \
-		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qtypeinfo.h \
-		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qtypetraits.h \
-		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qisenum.h \
-		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qsysinfo.h \
-		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qlogging.h \
-		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qflags.h \
-		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qatomic.h \
-		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qbasicatomic.h \
-		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qatomic_bootstrap.h \
-		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qgenericatomic.h \
-		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qatomic_cxx11.h \
-		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qatomic_msvc.h \
-		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qglobalstatic.h \
-		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qmutex.h \
-		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qnumeric.h \
-		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qversiontagging.h \
-		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qobjectdefs_impl.h \
-		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qstring.h \
-		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qchar.h \
-		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qbytearray.h \
-		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qrefcount.h \
-		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qarraydata.h \
-		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qstringbuilder.h \
-		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qlist.h \
-		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qalgorithms.h \
-		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qiterator.h \
-		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qhashfunctions.h \
-		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qpair.h \
-		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qbytearraylist.h \
-		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qstringlist.h \
-		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qregexp.h \
-		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qstringmatcher.h \
-		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qcoreevent.h \
-		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qscopedpointer.h \
-		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qmetatype.h \
-		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qvarlengtharray.h \
-		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qcontainerfwd.h \
-		../../../../Qt5.7.0/5.7/gcc_64/include/QtCore/qobject_impl.h
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o worker.o ../worker.cpp
 
 qrc_resources.o: qrc_resources.cpp 
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o qrc_resources.o qrc_resources.cpp
@@ -1420,11 +1483,11 @@ qrc_resources.o: qrc_resources.cpp
 moc_mainwindow.o: moc_mainwindow.cpp 
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o moc_mainwindow.o moc_mainwindow.cpp
 
-moc_graph.o: moc_graph.cpp 
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o moc_graph.o moc_graph.cpp
-
 moc_worker.o: moc_worker.cpp 
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o moc_worker.o moc_worker.cpp
+
+moc_glwidget.o: moc_glwidget.cpp 
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o moc_glwidget.o moc_glwidget.cpp
 
 ####### Install
 

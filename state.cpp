@@ -13,6 +13,7 @@ State::State(){
     m_nSize = 0;
     m_nVSize = 0;
     m_vValue.clear();
+    m_pLocation = QPointF();
 }
 
 State::State(uint size){
@@ -38,6 +39,7 @@ State::State(uint size){
     m_vValue.append(row);
 
     bool lap = false;
+    lap = true;
     uint64_t c;
     for(int idx=0; !lap ;idx++){
         row = new uint64_t[m_nVSize];
@@ -62,6 +64,10 @@ State::State(uint size){
         if( !lap )
             m_vValue.append(row);
     }
+
+    uniform_real_distribution<double> x(-90.0, -10.0);
+    uniform_real_distribution<double> y(-9.0, 9.0);
+    m_pLocation = QPointF(x(State::generator), y(State::generator)*10);
 }
 
 State::~State(){
@@ -77,6 +83,7 @@ State* State::evolve(uint rule){
     State *res = new State();
     res->m_nSize = m_nSize;
     res->m_nVSize = m_nVSize;
+    res->m_pLocation = m_pLocation + QPointF(2.0, 0.0);
 
     uint64_t *row = new uint64_t[res->m_nVSize];
     uint64_t *V = m_vValue[0];
@@ -147,6 +154,7 @@ State* State::evolve(uint rule){
     res->m_vValue.append(row);
 
     bool lap = false;
+    lap = true;
     uint64_t c;
     for(int idx=0; !lap ;idx++){
         row = new uint64_t[res->m_nVSize];
@@ -182,6 +190,7 @@ State* State::clone(){
     s->m_nSize = this->m_nSize;
     s->m_nVSize = this->m_nVSize;
     s->m_vValue.clear();
+    s->m_pLocation = this->m_pLocation;
 
     for(int i=0;i<this->m_vValue.size();i++){
         s->m_vValue.append(new uint64_t[s->m_nVSize]);
@@ -214,4 +223,18 @@ QString State::getStrTape(){
     for(uint i=0;i<m_nVSize;i++)
         str += QString::number(m_vValue[0][i], 2);
     return str;
+}
+
+QVector2D State::repulsionForce(State *s){
+    QVector2D dif(m_pLocation - s->m_pLocation);
+
+    double mag = 200 / dif.lengthSquared();
+
+    return mag * dif;
+}
+
+QVector2D State::attractionForce(State *s){
+    QVector2D dif(s->m_pLocation - m_pLocation);
+
+    return 0.4 * dif;
 }

@@ -15,15 +15,17 @@ LIBS += -lGLU
 
 SOURCES += main.cpp \
     mainwindow.cpp \
-    graph.cpp \
     state.cpp \
-    worker.cpp
+    worker.cpp \
+    glwidget.cpp \
+    graph.cpp
 
 HEADERS  += \
     mainwindow.h \
-    graph.h \
     state.h \
-    worker.h
+    worker.h \
+    glwidget.h \
+    graph.h
 
 FORMS    += \
     mainwindow.ui

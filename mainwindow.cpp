@@ -14,9 +14,9 @@ MainWindow::MainWindow(QWidget *parent) :
     v = new QIntValidator(0, 255, ui->ruleLineEdit);
     ui->ruleLineEdit->setValidator(v);
 
-    G = new Graph(this);
-    G->setSize(9);
-    G->setRule(193);
+    gl = new GLWidget(this);
+    gl->setSize(9);
+    gl->setRule(193);
 
     setFixedSize(geometry().width(), geometry().height());
     move(100, 100);
@@ -32,11 +32,11 @@ void MainWindow::on_sizeLineEdit_editingFinished(){
     QIntValidator *v = (QIntValidator*)ui->sizeLineEdit->validator();
 
     if( v->validate(str, pos) != QValidator::Acceptable ){
-        ui->sizeLineEdit->setText(QString::number(G->getSize()));
+        ui->sizeLineEdit->setText(QString::number(gl->getSize()));
         return;
     }
 
-    G->setSize(str.toUInt());
+    gl->setSize(str.toUInt());
 }
 
 void MainWindow::on_ruleLineEdit_editingFinished(){
@@ -45,16 +45,16 @@ void MainWindow::on_ruleLineEdit_editingFinished(){
     QIntValidator *v = (QIntValidator*)ui->ruleLineEdit->validator();
 
     if( v->validate(str, pos) != QValidator::Acceptable ){
-        ui->ruleLineEdit->setText(QString::number(G->getRule()));
+        ui->ruleLineEdit->setText(QString::number(gl->getRule()));
         return;
     }
 
-    G->setRule(str.toUInt());
+    gl->setRule(str.toUInt());
 }
 
 void MainWindow::on_stopPushButton_clicked(){
-    G->reset();
-    G->hide();
+    gl->reset();
+    gl->hide();
 
     ui->stopPushButton->setEnabled(false);
     ui->pausePushButton->setEnabled(false);
@@ -64,7 +64,7 @@ void MainWindow::on_stopPushButton_clicked(){
 }
 
 void MainWindow::on_pausePushButton_clicked(){
-    G->pause();
+    gl->pause();
 
     ui->stopPushButton->setEnabled(true);
     ui->pausePushButton->setEnabled(false);
@@ -72,8 +72,8 @@ void MainWindow::on_pausePushButton_clicked(){
 }
 
 void MainWindow::on_playPushButton_clicked(){
-    G->play();
-    G->show();
+    gl->play();
+    gl->show();
 
     ui->stopPushButton->setEnabled(true);
     ui->pausePushButton->setEnabled(true);

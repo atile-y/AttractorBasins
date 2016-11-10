@@ -1,54 +1,30 @@
 #ifndef GRAPH_H
 #define GRAPH_H
 
-#define STOP    1
-#define PAUSE   2
-#define PLAY    3
-
-#include <QOpenGLWidget>
-#include <QThread>
-
 #include "state.h"
-#include "worker.h"
 
-class Graph : public QOpenGLWidget {
-    Q_OBJECT
+class Graph{
 public:
-    explicit Graph(QWidget *parent = 0);
-    ~Graph();
+    Graph();
+   ~Graph();
 
-    uint getSize(){ return m_nSize; }
-    uint getRule(){ return m_nRule; }
+    QVector<State*> getNodes(){ return m_vNodes; }
+    State* getNode(int);
+    QPointF getCenter(){ return m_pCenter; }
+    QPointF getTopLeft(){ return m_pBoundary[0]; }
+    QPointF getBotRight(){ return m_pBoundary[1]; }
 
-    void setSize(uint s){ m_nSize = s; }
-    void setRule(uint r){ m_nRule = r; }
+    int getNumNodes();
+    State* getLastNode();
+    void addNode(State *);
+    void freeNodes();
 
-    void play();
-    void pause();
-    void reset();
-
-public slots:
-    void Idle();
-    void handleState(State*);
-    void handleError();
-
-signals:
-    void operate(State*, uint);
-
-protected:
-    void initializeGL();
-    void resizeGL(int, int);
-    void paintGL();
+    void layout();
 
 private:
-    bool Inicializa();
-
-    uint m_nSize;
-    uint m_nRule;
-    uint m_nState;
-    QVector<State*> m_vGraph;
-    Worker *m_Work;
-    QThread *m_Thread;
+    QVector<State*> m_vNodes;
+    QPointF m_pCenter;
+    QPointF m_pBoundary[2];
 };
 
 #endif // GRAPH_H

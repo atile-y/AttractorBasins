@@ -1,7 +1,7 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
-#include "graph.h"
+#include "glwidget.h"
 
 #include <QMainWindow>
 
@@ -26,7 +26,7 @@ private slots:
 
 private:
     Ui::MainWindow *ui;
-    Graph *G;
+    GLWidget *gl;
 };
 
 #endif // MAINWINDOW_H
