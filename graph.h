@@ -20,6 +20,8 @@ public:
     void freeNodes();
 
     void layout();
+    void center();
+    void resize(double);
 
 private:
     QVector<State*> m_vNodes;

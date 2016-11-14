@@ -40,25 +40,29 @@ void GLWidget::play(){
     if( m_nState == STOP ){
         reset();
 
-        State *s = new State(m_nSize);
-        Graph *g = new Graph();
-
-        g->addNode(s);
-        m_vGraph.append(g);
-
         m_Thread = new QThread;
         m_Work = new Worker;
         m_Work->moveToThread(m_Thread);
 
-        connect(this, SIGNAL(operate(State*,uint)), m_Work, SLOT(doWork(State*,uint)));
-        connect(m_Work, SIGNAL(stateError()), this, SLOT(handleError()));
-        connect(m_Work, SIGNAL(stateReady(State*)), this, SLOT(handleState(State*)));
+        qRegisterMetaType< QVector<Graph*> >("QVector<Graph*>");
+        connect(this, SIGNAL(newState(QVector<Graph*>)), m_Work, SLOT(findState(QVector<Graph*>)));
+        connect(this, SIGNAL(evolve(State*,uint)), m_Work, SLOT(evolveState(State*,uint)));
+        connect(m_Work, SIGNAL(check(State*)), this, SLOT(checkState(State*)));
+        connect(m_Work, SIGNAL(add(State*)), this, SLOT(addState(State*)));
+        connect(m_Work, SIGNAL(stateError(QString)), this, SLOT(handleError(QString)));
 
         m_Thread->start();
-        emit operate(s, m_nRule);
+
+        State *s = new State(m_nSize);
+        Graph *g = new Graph();
+        g->addNode(s);
+        m_vGraph.append(g);
+        emit evolve(s, m_nRule);
     }
-    else
-        emit operate(m_vGraph.last()->getLastNode(), m_nRule);
+    else if( m_nCall == EVO )
+        emit evolve(m_vGraph.last()->getLastNode(), m_nRule);
+    else if( m_nCall == FIND )
+        emit newState(m_vGraph);
 
     m_nState = PLAY;
     update();
@@ -70,19 +74,17 @@ void GLWidget::pause(){
 
 void GLWidget::reset(){
     if( m_Thread != NULL ){
-        qInfo() << "quit";
         m_Thread->quit();
-        qInfo() << "wait";
         m_Thread->wait();
-        qInfo() << "delete";
         delete m_Thread;
         m_Thread = NULL;
-        qInfo() << "work";
         if( m_Work != NULL ){
             delete m_Work;
             m_Work = NULL;
         }
     }
+
+    m_nRows = 1;
 
     for(Graph *g : m_vGraph)
         if( g != NULL )
@@ -97,14 +99,22 @@ void GLWidget::Idle(){
     update();
 }
 
-void GLWidget::handleState(State *state){
+void GLWidget::addState(State *state){
+    Graph *g = new Graph();
+    g->addNode(state);
+    m_vGraph.append(g);
+    if( m_nState == PLAY )
+        emit evolve(state, m_nRule);
+    else
+        m_nCall = EVO;
+}
+
+void GLWidget::checkState(State *state){
     State *find = NULL;
     int idx = -1;
-    int nodes = 0;
 
     for(int i=0;i<m_vGraph.size() && find == NULL;i++)
         for(State *s : m_vGraph[i]->getNodes()){
-            nodes++;
             if( s->equals(state) ){
                 find = s;
                 idx = i;
@@ -115,174 +125,106 @@ void GLWidget::handleState(State *state){
     if( find != NULL ){
         Graph *g;
 
-        if( idx + 1 == m_vGraph.size() )
-            m_vGraph[idx]->getLastNode()->setNext(find);
-        else{
+        m_vGraph.last()->getLastNode()->setNext(find);
+        if( idx + 1 < m_vGraph.size() ){
             g = m_vGraph.takeLast();
-            g->getLastNode()->setNext(find);
             for(State *s : g->getNodes())
                 m_vGraph[idx]->addNode(s);
             g->freeNodes();
             delete g;
         }
+        m_vGraph[idx]->layout();
+        fitGraphs();
 
-        State *ns;
-        int tries = 0;
-        do{
-            ns = new State(m_nSize);
-            for(int i=0;i<m_vGraph.size() && ns != NULL;i++)
-                for(State *s : m_vGraph[i]->getNodes())
-                    if( s->equals(ns) ){
-                        delete ns;
-                        ns = NULL;
-                        break;
-                    }
-            tries++;
-        }
-        while( ns == NULL && tries < 2050 );
-
-        if( tries < 2050 ){
-            g = new Graph();
-            g->addNode(ns);
-            m_vGraph.append(g);
-            emit operate(ns, m_nRule);
-        }
-        else{
-            m_Thread->quit();
-            qInfo() << m_vGraph.size() << " Graphs";
-            QString str;
-            for(int i=0;i<m_vGraph.size();i++){
-                int m = m_vGraph[i]->getNumNodes();
-                str = QString("G[%1]: %2 Nodes").arg(i).arg(m);
-                qInfo() << str;
-
-                m_vGraph[i]->layout();
-
-                qInfo() << "   [" << m_vGraph[i]->getTopLeft()
-                        << "," << m_vGraph[i]->getCenter()
-                        << "," << m_vGraph[i]->getBotRight() << "]";
-
-                for(int j=0;j<m;j++){
-                    State *s = m_vGraph[i]->getNode(j);
-                    str = QString("N[%1]: %2 (%3, %4)  =>  ")
-                            .arg(j)
-                            .arg(s->getValues()[0])
-                            .arg(s->getPos().x())
-                            .arg(s->getPos().y());
-                    s = s->getNext();
-                    if( s == NULL )
-                        str += "null";
-                    else{
-                        str += QString("%1 (%2, %3)")
-                                .arg(s->getValues()[0])
-                                .arg(s->getPos().x())
-                                .arg(s->getPos().y());
-                    }
-                    qInfo() << str;
-                }
-            }
-        }
-    }
-    else if( nodes > 1000 ){
-        m_Thread->quit();
-
-        qInfo() << "MORE THAN 1000 NODES";
-        qInfo() << m_vGraph.size() << " Graphs";
-        QString str;
-        for(int i=0;i<m_vGraph.size();i++){
-            int m = m_vGraph[i]->getNumNodes();
-            str = QString("G[%1]: %2 Nodes").arg(i).arg(m);
-            qInfo() << str;
-            for(int j=0;j<m;j++){
-                State *s = m_vGraph[i]->getNode(j);
-                str = QString("N[%1]: %2 (%3, %4)  =>  ")
-                        .arg(j)
-                        .arg(s->getValues()[0])
-                        .arg(s->getPos().x())
-                        .arg(s->getPos().y());
-                s = s->getNext();
-                if( s == NULL )
-                    str += "null";
-                else{
-                    str += QString("%1 (%2, %3)")
-                            .arg(s->getValues()[0])
-                            .arg(s->getPos().x())
-                            .arg(s->getPos().y());
-                }
-                qInfo() << str;
-            }
-        }
+        if( m_nState == PLAY )
+            emit newState(m_vGraph);
+        else
+            m_nCall = FIND;
     }
     else{
         m_vGraph.last()->getLastNode()->setNext(state);
         m_vGraph.last()->addNode(state);
-        emit operate(state, m_nRule);
+        if( m_nState == PLAY )
+            emit evolve(state, m_nRule);
+        else
+            m_nCall = EVO;
     }
 }
 
-void GLWidget::handleError(){
-    qInfo() << "handleError()";
-    //m_Work->start();
+void GLWidget::handleError(QString error){
+    if( error == tr("Run out of tries.") ){
+        if( m_nState == PLAY )
+            emit newState(m_vGraph);
+        else
+            m_nCall = FIND;
+    }
 }
 
 void GLWidget::initializeGL(){
     glEnable(GL_COLOR_MATERIAL);
     glColorMaterial(GL_FRONT, GL_AMBIENT_AND_DIFFUSE);
     glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
+    gluLookAt(0, 0, 50, 0, 0, 0, 0, 1, 0);
 }
 
 void GLWidget::resizeGL(int width, int height){
     GLfloat w = width, h = height;
 
+    m_dRatio = w / h;
+    if( width < height ){
+        m_dWidth = 100.0;
+        m_dHeight = h*100.0/w;
+    }
+    else{
+        m_dWidth = w*100.0/h;
+        m_dHeight = 100.0;
+    }
+
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
-    if( width < height )
-        gluOrtho2D(-100, 100, -h*100/w, h*100/w);
-    else
-        gluOrtho2D(-w*100/h, w*100/h, -100, 100);
+    gluOrtho2D(-m_dWidth, m_dWidth, -m_dHeight, m_dHeight);
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
 
-    gluLookAt(0, 0, 50, 0, 0, 0, 0, 1, 0);
+    fitGraphs();
 }
 
 void GLWidget::paintGL(){
     glClear(GL_COLOR_BUFFER_BIT);
     glLoadIdentity();
 
-    glBegin(GL_LINES);
-        glColor3f(0.0f, 0.0f, 0.0f);
-        for(int i=-90;i<0;i+=10){
-            glVertex2i(i, -90);
-            glVertex2i(i, 90);
-            glVertex2i(-90, i);
-            glVertex2i(90, i);
-            glVertex2i(-i, -90);
-            glVertex2i(-i, 90);
-            glVertex2i(-90, -i);
-            glVertex2i(90, -i);
-        }
-        glColor3f(0.7f, 0.1f, 0.1f);
-        glVertex2i(0, -100);
-        glVertex2i(0, 100);
-        glVertex2i(-100, 0);
-        glVertex2i(100, 0);
-    glEnd();
+    double baseX = m_dWidth/m_nCols - m_dWidth;
+    double baseY = m_dHeight - m_dHeight/m_nRows;
+    double offsetX = 2 * (m_dWidth + baseX);
+    double offsetY = 2 * (m_dHeight - baseY);
 
-    glColor3f(0.0f, 0.0f, 1.0f);
-    for(Graph *g : m_vGraph)
+    for(int i=0;i<m_vGraph.size();i++){
+        Graph *g = m_vGraph[i];
+
+        glPushMatrix();
+        glTranslated(baseX + (i%m_nCols)*offsetX, baseY - (i/m_nCols)*offsetY, 0.0);
+
+        glColor3f(0.0f, 0.0f, 0.0f);
+        glBegin(GL_LINE_LOOP);
+            glVertex2d(g->getTopLeft().x() - 4.0, g->getTopLeft().y() + 4.0);
+            glVertex2d(g->getTopLeft().x() - 4.0, g->getBotRight().y() - 4.0);
+            glVertex2d(g->getBotRight().x() + 4.0, g->getBotRight().y() - 4.0);
+            glVertex2d(g->getBotRight().x() + 4.0, g->getTopLeft().y() + 4.0);
+        glEnd();
+
+        glColor3f(0.0f, 0.0f, 1.0f);
         for(State *s : g->getNodes()){
             State *nx = s->getNext();
             if( nx != NULL ){
-                drawCircle(s->getPos(), 2);
-                glLineWidth(2.0f);
+                drawCircle(s->getPos(), 1.0);
                 glBegin(GL_LINE_STRIP);
                     glVertex2d(s->getPos().x(), s->getPos().y());
                     glVertex2d(nx->getPos().x(), nx->getPos().y());
                 glEnd();
-                glLineWidth(1.0f);
             }
         }
+        glPopMatrix();
+    }
 }
 
 void GLWidget::drawCircle(QPointF c, double r){
@@ -292,4 +234,15 @@ void GLWidget::drawCircle(QPointF c, double r){
             glVertex2d(c.x() + r * qCos(qDegreesToRadians(theta)),
                        c.y() + r * qSin(qDegreesToRadians(theta)));
     glEnd();
+}
+
+void GLWidget::fitGraphs(){
+    for(m_nRows=1;m_nRows < 1000;m_nRows++){
+        m_nCols = qFloor(m_nRows * m_dRatio);
+        if( m_nRows * m_nCols - m_vGraph.size() >= 0 )
+            break;
+    }
+
+    for(Graph *g : m_vGraph)
+        g->resize(m_dHeight / m_nRows);
 }

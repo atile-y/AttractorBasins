@@ -9,6 +9,7 @@
 #include "../worker.h"
 #include <QtCore/qbytearray.h>
 #include <QtCore/qmetatype.h>
+#include <QtCore/QVector>
 #if !defined(Q_MOC_OUTPUT_REVISION)
 #error "The header file 'worker.h' doesn't include <QObject>."
 #elif Q_MOC_OUTPUT_REVISION != 67
@@ -19,8 +20,8 @@
 
 QT_BEGIN_MOC_NAMESPACE
 struct qt_meta_stringdata_Worker_t {
-    QByteArrayData data[6];
-    char stringdata0[44];
+    QByteArrayData data[9];
+    char stringdata0[74];
 };
 #define QT_MOC_LITERAL(idx, ofs, len) \
     Q_STATIC_BYTE_ARRAY_DATA_HEADER_INITIALIZER_WITH_OFFSET(len, \
@@ -30,15 +31,18 @@ struct qt_meta_stringdata_Worker_t {
 static const qt_meta_stringdata_Worker_t qt_meta_stringdata_Worker = {
     {
 QT_MOC_LITERAL(0, 0, 6), // "Worker"
-QT_MOC_LITERAL(1, 7, 10), // "stateReady"
-QT_MOC_LITERAL(2, 18, 0), // ""
-QT_MOC_LITERAL(3, 19, 6), // "State*"
-QT_MOC_LITERAL(4, 26, 10), // "stateError"
-QT_MOC_LITERAL(5, 37, 6) // "doWork"
+QT_MOC_LITERAL(1, 7, 5), // "check"
+QT_MOC_LITERAL(2, 13, 0), // ""
+QT_MOC_LITERAL(3, 14, 6), // "State*"
+QT_MOC_LITERAL(4, 21, 3), // "add"
+QT_MOC_LITERAL(5, 25, 10), // "stateError"
+QT_MOC_LITERAL(6, 36, 9), // "findState"
+QT_MOC_LITERAL(7, 46, 15), // "QVector<Graph*>"
+QT_MOC_LITERAL(8, 62, 11) // "evolveState"
 
     },
-    "Worker\0stateReady\0\0State*\0stateError\0"
-    "doWork"
+    "Worker\0check\0\0State*\0add\0stateError\0"
+    "findState\0QVector<Graph*>\0evolveState"
 };
 #undef QT_MOC_LITERAL
 
@@ -48,25 +52,29 @@ static const uint qt_meta_data_Worker[] = {
        7,       // revision
        0,       // classname
        0,    0, // classinfo
-       3,   14, // methods
+       5,   14, // methods
        0,    0, // properties
        0,    0, // enums/sets
        0,    0, // constructors
        0,       // flags
-       2,       // signalCount
+       3,       // signalCount
 
  // signals: name, argc, parameters, tag, flags
-       1,    1,   29,    2, 0x06 /* Public */,
-       4,    0,   32,    2, 0x06 /* Public */,
+       1,    1,   39,    2, 0x06 /* Public */,
+       4,    1,   42,    2, 0x06 /* Public */,
+       5,    1,   45,    2, 0x06 /* Public */,
 
  // slots: name, argc, parameters, tag, flags
-       5,    2,   33,    2, 0x0a /* Public */,
+       6,    1,   48,    2, 0x0a /* Public */,
+       8,    2,   51,    2, 0x0a /* Public */,
 
  // signals: parameters
     QMetaType::Void, 0x80000000 | 3,    2,
-    QMetaType::Void,
+    QMetaType::Void, 0x80000000 | 3,    2,
+    QMetaType::Void, QMetaType::QString,    2,
 
  // slots: parameters
+    QMetaType::Void, 0x80000000 | 7,    2,
     QMetaType::Void, 0x80000000 | 3, QMetaType::UInt,    2,    2,
 
        0        // eod
@@ -78,9 +86,11 @@ void Worker::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, void
         Worker *_t = static_cast<Worker *>(_o);
         Q_UNUSED(_t)
         switch (_id) {
-        case 0: _t->stateReady((*reinterpret_cast< State*(*)>(_a[1]))); break;
-        case 1: _t->stateError(); break;
-        case 2: _t->doWork((*reinterpret_cast< State*(*)>(_a[1])),(*reinterpret_cast< uint(*)>(_a[2]))); break;
+        case 0: _t->check((*reinterpret_cast< State*(*)>(_a[1]))); break;
+        case 1: _t->add((*reinterpret_cast< State*(*)>(_a[1]))); break;
+        case 2: _t->stateError((*reinterpret_cast< QString(*)>(_a[1]))); break;
+        case 3: _t->findState((*reinterpret_cast< QVector<Graph*>(*)>(_a[1]))); break;
+        case 4: _t->evolveState((*reinterpret_cast< State*(*)>(_a[1])),(*reinterpret_cast< uint(*)>(_a[2]))); break;
         default: ;
         }
     } else if (_c == QMetaObject::IndexOfMethod) {
@@ -88,15 +98,22 @@ void Worker::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, void
         void **func = reinterpret_cast<void **>(_a[1]);
         {
             typedef void (Worker::*_t)(State * );
-            if (*reinterpret_cast<_t *>(func) == static_cast<_t>(&Worker::stateReady)) {
+            if (*reinterpret_cast<_t *>(func) == static_cast<_t>(&Worker::check)) {
                 *result = 0;
                 return;
             }
         }
         {
-            typedef void (Worker::*_t)();
-            if (*reinterpret_cast<_t *>(func) == static_cast<_t>(&Worker::stateError)) {
+            typedef void (Worker::*_t)(State * );
+            if (*reinterpret_cast<_t *>(func) == static_cast<_t>(&Worker::add)) {
                 *result = 1;
+                return;
+            }
+        }
+        {
+            typedef void (Worker::*_t)(QString );
+            if (*reinterpret_cast<_t *>(func) == static_cast<_t>(&Worker::stateError)) {
+                *result = 2;
                 return;
             }
         }
@@ -128,27 +145,35 @@ int Worker::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 3)
+        if (_id < 5)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 3;
+        _id -= 5;
     } else if (_c == QMetaObject::RegisterMethodArgumentMetaType) {
-        if (_id < 3)
+        if (_id < 5)
             *reinterpret_cast<int*>(_a[0]) = -1;
-        _id -= 3;
+        _id -= 5;
     }
     return _id;
 }
 
 // SIGNAL 0
-void Worker::stateReady(State * _t1)
+void Worker::check(State * _t1)
 {
     void *_a[] = { Q_NULLPTR, const_cast<void*>(reinterpret_cast<const void*>(&_t1)) };
     QMetaObject::activate(this, &staticMetaObject, 0, _a);
 }
 
 // SIGNAL 1
-void Worker::stateError()
+void Worker::add(State * _t1)
 {
-    QMetaObject::activate(this, &staticMetaObject, 1, Q_NULLPTR);
+    void *_a[] = { Q_NULLPTR, const_cast<void*>(reinterpret_cast<const void*>(&_t1)) };
+    QMetaObject::activate(this, &staticMetaObject, 1, _a);
+}
+
+// SIGNAL 2
+void Worker::stateError(QString _t1)
+{
+    void *_a[] = { Q_NULLPTR, const_cast<void*>(reinterpret_cast<const void*>(&_t1)) };
+    QMetaObject::activate(this, &staticMetaObject, 2, _a);
 }
 QT_END_MOC_NAMESPACE

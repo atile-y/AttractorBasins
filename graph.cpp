@@ -54,7 +54,7 @@ void Graph::layout(){
     QVector2D tmp;
     QVector2D Vel[m_vNodes.size()];
 
-    for(int i=0;i<500 && totalMovement > threshold;i++){
+    for(int i=0;i<1000 && totalMovement > threshold;i++){
         totalMovement = 0.0;
         for(int j=0;j<m_vNodes.size();j++){
             tmp = Vel[j];
@@ -74,14 +74,11 @@ void Graph::layout(){
             m_vNodes[j]->setPos(m_vNodes[j]->getPos() + Vel[j].toPointF());
     }
 
-    qInfo() << "LAYOUT ENDS WITH" << totalMovement << "MOVEMENT";
-
     m_pCenter = QPointF();
     m_pBoundary[0] = m_vNodes[0]->getPos();
     m_pBoundary[1] = m_vNodes[0]->getPos();
 
     for(State *s : m_vNodes){
-        m_pCenter += s->getPos();
         if( s->getPos().x() < m_pBoundary[0].x() )
             m_pBoundary[0].setX(s->getPos().x());
         if( s->getPos().y() > m_pBoundary[0].y() )
@@ -91,12 +88,29 @@ void Graph::layout(){
         if( s->getPos().y() < m_pBoundary[1].y() )
             m_pBoundary[1].setY(s->getPos().y());
     }
-    m_pCenter /= m_vNodes.size();
+    m_pCenter = (m_pBoundary[0] + m_pBoundary[1]) / 2.0;
+}
 
-    for(State *s : m_vNodes)
-        s->setPos(s->getPos() - m_pCenter);
+void Graph::center(){
     m_pBoundary[0] -= m_pCenter;
     m_pBoundary[1] -= m_pCenter;
+    for(State *s : m_vNodes)
+        s->setPos(s->getPos() - m_pCenter);
 
     m_pCenter -= m_pCenter;
+}
+
+void Graph::resize(double resize){
+    center();
+
+    QPointF scale((resize-5.0) / m_pBoundary[1].x(), (resize-5.0) / m_pBoundary[0].y());
+    for(State *s : m_vNodes)
+        s->setPos(QPointF(s->getPos().x() * scale.x(), s->getPos().y() * scale.y()));
+
+    m_pBoundary[0].rx() *= scale.x();
+    m_pBoundary[0].ry() *= scale.y();
+    m_pBoundary[1].rx() *= scale.x();
+    m_pBoundary[1].ry() *= scale.y();
+    m_pCenter.rx() *= scale.x();
+    m_pCenter.ry() *= scale.y();
 }
