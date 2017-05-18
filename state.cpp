@@ -39,8 +39,9 @@ State::State(uint size){
     m_vValue.append(row);
 
     bool lap = false;
-    lap = true;
+    lap = true; // Quitar si se quieren agregar todos la combinaciones
     uint64_t c;
+    // Agregar todos los posibles corrimientos de bits
     for(int idx=0; !lap ;idx++){
         row = new uint64_t[m_nVSize];
 
@@ -74,6 +75,30 @@ State::~State(){
     for(uint64_t *r : m_vValue)
         if( r != NULL )
             delete r;
+}
+
+void State::zeros(){
+    if( m_nSize == 0 )
+        return;
+
+    for(uint i=0;i<m_nVSize;i++)
+        m_vValue[0][i] = 0;
+}
+
+void State::next(){
+    bool go = true;
+    int mod = m_nSize%64;
+
+    for(uint i=m_nVSize-1;i>0 && go;i--){
+        m_vValue[0][i]++;
+        go = m_vValue[0][i] == 0;
+    }
+
+    if( go ){
+        m_vValue[0][0]++;
+        if( m_vValue[0][0] == ((uint64_t)(1<<mod)) )
+            m_vValue[0][0] = 0;
+    }
 }
 
 State* State::evolve(uint rule){
@@ -218,6 +243,13 @@ bool State::equals(State *s){
     return false;
 }
 
+bool State::isZero(){
+    for(uint i=0;i<m_nVSize;i++)
+        if( m_vValue[0][i] != 0 )
+            return false;
+    return true;
+}
+
 QString State::getStrTape(){
     QString str = "";
     for(uint i=0;i<m_nVSize;i++)
@@ -236,5 +268,5 @@ QVector2D State::repulsionForce(State *s){
 QVector2D State::attractionForce(State *s){
     QVector2D dif(s->m_pLocation - m_pLocation);
 
-    return 0.4 * dif;
+    return 0.1 * dif;
 }

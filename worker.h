@@ -9,7 +9,8 @@ class Worker : public QObject{
     Q_OBJECT
 
 public:
-    Worker();
+    Worker(uint);
+    ~Worker();
 
 public slots:
     void findState(QVector<Graph*>);
@@ -22,6 +23,8 @@ signals:
 
 private:
     uint m_nErrors;
+    State *m_state;
+    bool *m_visitado;
 };
 
 #endif // WORKER_H

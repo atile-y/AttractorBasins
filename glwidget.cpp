@@ -22,6 +22,7 @@ GLWidget::GLWidget(QWidget *parent) : QOpenGLWidget(parent){
 }
 
 GLWidget::~GLWidget(){
+    qInfo() << "GLWidget destructor begin...";
     while( !children().isEmpty() )
         delete children()[0];
     for(Graph *g : m_vGraph)
@@ -34,6 +35,7 @@ GLWidget::~GLWidget(){
         if( m_Work != NULL )
             delete m_Work;
     }
+    qInfo() << "GLWidget destructor end...";
 }
 
 void GLWidget::play(){
@@ -41,7 +43,7 @@ void GLWidget::play(){
         reset();
 
         m_Thread = new QThread;
-        m_Work = new Worker;
+        m_Work = new Worker(m_nSize);
         m_Work->moveToThread(m_Thread);
 
         qRegisterMetaType< QVector<Graph*> >("QVector<Graph*>");
@@ -100,6 +102,11 @@ void GLWidget::Idle(){
 }
 
 void GLWidget::addState(State *state){
+    if( state == NULL ){
+        qInfo() << "END";
+        return;
+    }
+
     Graph *g = new Graph();
     g->addNode(state);
     m_vGraph.append(g);
@@ -152,6 +159,7 @@ void GLWidget::checkState(State *state){
 }
 
 void GLWidget::handleError(QString error){
+    qInfo() << "Error: " << error;
     if( error == tr("Run out of tries.") ){
         if( m_nState == PLAY )
             emit newState(m_vGraph);
@@ -212,11 +220,12 @@ void GLWidget::paintGL(){
             glVertex2d(g->getBotRight().x() + 4.0, g->getTopLeft().y() + 4.0);
         glEnd();
 
-        glColor3f(0.0f, 0.0f, 1.0f);
         for(State *s : g->getNodes()){
             State *nx = s->getNext();
             if( nx != NULL ){
-                drawCircle(s->getPos(), 1.0);
+                glColor3f(0.0f, 0.0f, 1.0f);
+                drawCircle(s->getPos(), 0.5);
+                glColor3f(0.0f, 0.0f, 0.0f);
                 glBegin(GL_LINE_STRIP);
                     glVertex2d(s->getPos().x(), s->getPos().y());
                     glVertex2d(nx->getPos().x(), nx->getPos().y());

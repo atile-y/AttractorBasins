@@ -23,6 +23,8 @@ public:
     void center();
     void resize(double);
 
+    bool isTarget();
+
 private:
     QVector<State*> m_vNodes;
     QPointF m_pCenter;

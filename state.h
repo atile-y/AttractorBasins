@@ -23,9 +23,12 @@ public:
     void setNext(State *s){ m_sNext = s; }
     void setPos(QPointF p){ m_pLocation = p; }
 
+    void zeros();
+    void next();
     State* evolve(uint);
     State* clone();
     bool equals(State *);
+    bool isZero();
     QString getStrTape();
 
     QVector2D repulsionForce(State *);

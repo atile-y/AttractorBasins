@@ -2,48 +2,67 @@
 
 #include <QDebug>
 #include <QThread>
-#include <QTime>
 
-Worker::Worker(){
+Worker::Worker(uint s){
     m_nErrors = 0;
+    m_state = new State(s);
+    m_state->zeros();
+
+    if( s <= 20 ){
+        m_visitado = new bool[1<<s];
+        memset(m_visitado, 0, (1<<s)*sizeof(m_visitado[0]));
+    }
+    else
+        m_visitado = NULL;
+}
+
+Worker::~Worker(){
+    delete m_state;
+    if( m_visitado != NULL )
+        delete m_visitado;
 }
 
 void Worker::findState(QVector<Graph*> Gs){
-    QTime ini;
-    ini.start();
+    if( m_state->getSize() != Gs[0]->getNode(0)->getSize() ){
+        emit stateError(tr("Different state's size."));
+        return;
+    }
 
-    State *ns;
-    int size = Gs[0]->getNode(0)->getSize();
-    int tries = 0;
-    do{
-        ns = new State(size);
-        for(int i=0;i<Gs.size() && ns != NULL;i++)
-            for(State *s : Gs[i]->getNodes())
-                if( s->equals(ns) ){
-                    delete ns;
-                    ns = NULL;
-                    break;
-                }
-        tries++;
-    }
-    while( ns == NULL && tries < 10000 );
+    bool find = true;
+    while( find ){
+        find = false;
 
-    if( ns != NULL ){
-        m_nErrors = 0;
-        emit add(ns);
+        if( m_visitado == NULL ){
+            for(int i=0;i<Gs.size() && !find;i++)
+                for(State *s : Gs[i]->getNodes())
+                    if( s->equals(m_state) ){
+                        find = true;
+                        break;
+                    }
+        }
+        else
+            find = m_visitado[m_state->getValues()[0]];
+
+
+        if( find ){
+            m_state->next();
+            if( m_state->isZero() ){
+                emit add(NULL);
+                return;
+            }
+        }
     }
-    else{
-        if( m_nErrors < 100 )
-            m_nErrors++;
-        QThread::msleep(m_nErrors * 10);
-        emit stateError(tr("Run out of tries."));
-    }
-    if( ini.elapsed() > 500 )
-        qInfo() << "findState end [" << ini.elapsed() << "ms]";
+
+    if( m_visitado != NULL )
+        m_visitado[m_state->getValues()[0]] = true;
+    emit add(m_state->clone());
 }
 
 void Worker::evolveState(State *s, uint r){
     State *ns = s->evolve(r);
+
+    if( m_visitado != NULL )
+        m_visitado[ns->getValues()[0]] = true;
 
     emit check(ns);
 }

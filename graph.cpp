@@ -100,10 +100,10 @@ void Graph::center(){
     m_pCenter -= m_pCenter;
 }
 
-void Graph::resize(double resize){
+void Graph::resize(double res){
     center();
 
-    QPointF scale((resize-5.0) / m_pBoundary[1].x(), (resize-5.0) / m_pBoundary[0].y());
+    QPointF scale((res-5.0) / m_pBoundary[1].x(), (res-5.0) / m_pBoundary[0].y());
     for(State *s : m_vNodes)
         s->setPos(QPointF(s->getPos().x() * scale.x(), s->getPos().y() * scale.y()));
 
@@ -113,4 +113,15 @@ void Graph::resize(double resize){
     m_pBoundary[1].ry() *= scale.y();
     m_pCenter.rx() *= scale.x();
     m_pCenter.ry() *= scale.y();
+}
+
+bool Graph::isTarget(){
+    uint64_t V[17] = {165, 0, 511, 170, 149, 169, 219, 73, 330, 338, 85, 340, 292, 438, 146, 298, 365};
+
+    for(State *s : m_vNodes)
+        for(uint64_t n : V)
+            if( s->getValues()[0] == n )
+                return true;
+
+    return false;
 }
