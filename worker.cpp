@@ -19,7 +19,7 @@ Worker::Worker(uint s){
 Worker::~Worker(){
     delete m_state;
     if( m_visitado != NULL )
-        delete m_visitado;
+        delete[] m_visitado;
 }
 
 void Worker::findState(QVector<Graph*> Gs){
